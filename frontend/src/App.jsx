@@ -6,6 +6,8 @@ import { Login } from "./routes/Login";
 import { Register } from "./routes/Register";
 import { AuthProvider } from "./contexts/useAuth";
 import { PrivateRoute } from "./components/PrivateRoute";
+import { CreatePost } from "./routes/CreatePost";
+import { Home } from "./routes/Home";
 
 function App() {
   return (
@@ -17,11 +19,31 @@ function App() {
               element={
                 <Layout>
                   <PrivateRoute>
+                    <Home />
+                  </PrivateRoute>
+                </Layout>
+              }
+              path="/"
+            />
+            <Route
+              element={
+                <Layout>
+                  <PrivateRoute>
                     <UserProfile />
                   </PrivateRoute>
                 </Layout>
               }
               path="/:username"
+            />
+            <Route
+              element={
+                <Layout>
+                  <PrivateRoute>
+                    <CreatePost />
+                  </PrivateRoute>
+                </Layout>
+              }
+              path="/create/post"
             />
             <Route
               element={

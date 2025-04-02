@@ -1,6 +1,7 @@
 import { Flex, HStack, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
+import { IoMdAddCircleOutline } from 'react-icons/io'
 
 export const Navbar = () => {
   const nav = useNavigate();
@@ -17,15 +18,22 @@ export const Navbar = () => {
       alignItems="center"
     >
       <HStack w="90%" justifyContent="space-between" color="white">
-        <Text fontSize="24px" fontWeight="bold">
+        <Text onClick={(route) => handleNavigation("")}
+            cursor="pointer" fontSize="24px" fontWeight="bold">
           Social Media
         </Text>
-        <HStack>
+        <HStack gap='10px'>
           <Text
             onClick={(route) => handleNavigation("alexnite")}
             cursor="pointer"
           >
             <CgProfile size="25px" />
+          </Text>
+          <Text
+            onClick={(route) => handleNavigation("create/post")}
+            cursor="pointer"
+          >
+            <IoMdAddCircleOutline size="30px" />
           </Text>
         </HStack>
       </HStack>

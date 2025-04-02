@@ -1,5 +1,6 @@
 from rest_framework.decorators import (api_view, authentication_classes,
                                        permission_classes)
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import (TokenObtainPairView,
@@ -12,7 +13,6 @@ from .serializers import (MyUserProfileSerializer, PostSerializer,
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-# @authentication_classes([])
 def authenticated(request):
     return Response("authenticated!")
 
@@ -186,3 +186,53 @@ def toggle_like(request):
             return Response({"now_liked": True})
     except:
         return Response({"error": "Failed to like post"})
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def create_post(request):
+    try:
+        data = request.data
+        try:
+            user = MyUser.objects.get(username=request.user.username)
+        except MyUser.DoesNotExist:
+            return Response({"error": "User does not exist"})
+
+        post = Post.objects.create(user=user, description=data["description"])
+
+        serializer = PostSerializer(post, many=False)
+
+        return Response(serializer.data)
+    except:
+        return Response({"error": "Error creating post"})
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_posts(request):
+    try:
+        my_user = MyUser.objects.get(username=request.user.username)
+    except MyUser.DoesNotExist:
+        return Response({"error": "User does not exist"})
+
+    posts = Post.objects.all().order_by("-created_at")
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
+
+    result_page = paginator.paginate_queryset(posts, request)
+
+    serializer = PostSerializer(result_page, many=True)
+
+    data = []
+
+    for post in serializer.data:
+        new_post = {}
+
+        if my_user.username in post["likes"]:
+            new_post = {**post, "liked": True}
+        else:
+            new_post = {**post, "liked": False}
+        data.append(new_post)
+
+    return paginator.get_paginated_response(data)
