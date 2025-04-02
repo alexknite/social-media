@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/useAuth";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { CreatePost } from "./routes/CreatePost";
 import { Home } from "./routes/Home";
+import { Search } from "./routes/Search";
 
 function App() {
   return (
@@ -44,6 +45,16 @@ function App() {
                 </Layout>
               }
               path="/create/post"
+            />
+            <Route
+              element={
+                <Layout>
+                  <PrivateRoute>
+                    <Search />
+                  </PrivateRoute>
+                </Layout>
+              }
+              path="/search"
             />
             <Route
               element={

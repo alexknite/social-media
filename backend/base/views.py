@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
 
 from .models import MyUser, Post
 from .serializers import (MyUserProfileSerializer, PostSerializer,
-                          UserRegisterSerializer)
+                          UserRegisterSerializer, UserSerializer)
 
 
 @api_view(["GET"])
@@ -236,3 +236,12 @@ def get_posts(request):
         data.append(new_post)
 
     return paginator.get_paginated_response(data)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def search_users(request):
+    query = request.query_params.get("query", "")
+    users = MyUser.objects.filter(username__icontains=query)
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)

@@ -92,3 +92,8 @@ export const get_posts = async (num) => {
   const res = await api.get(`/get_posts/?page=${num}`);
   return res.data;
 };
+
+export const search_users = async (search) => {
+  const res = await api.get(`/search/?query=${search}`);
+  return res.data;
+};

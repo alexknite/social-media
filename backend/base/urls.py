@@ -5,7 +5,7 @@ from django.urls import path
 from .views import (CustomTokenObtainPairView, CustomTokenRefreshView,
                     authenticated, create_post, get_posts,
                     get_user_profile_data, get_users_posts, register,
-                    toggle_follow, toggle_like)
+                    search_users, toggle_follow, toggle_like)
 
 urlpatterns = [
     path("user_data/<str:pk>/", get_user_profile_data),
@@ -18,4 +18,5 @@ urlpatterns = [
     path("toggle_like/", toggle_like),
     path("create_post/", create_post),
     path("get_posts/", get_posts),
+    path("search/", search_users),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
