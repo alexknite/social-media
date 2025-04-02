@@ -10,8 +10,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { get_user_profile_data, toggle_follow } from "../api/endpoints";
+import {
+  get_user_profile_data,
+  get_users_posts,
+  toggle_follow,
+} from "../api/endpoints";
 import { SERVER_URL } from "../constants/constants";
+import { Post } from "../components/Post";
 
 export const UserProfile = () => {
   const get_username_from_url = () => {
@@ -30,6 +35,9 @@ export const UserProfile = () => {
       <VStack w="75%">
         <Box w="100%" mt="40px">
           <UserDetails username={username} />
+        </Box>
+        <Box w="100%" mt="30px">
+          <UserPosts username={username} />
         </Box>
       </VStack>
     </Flex>
@@ -117,5 +125,44 @@ const UserDetails = ({ username }) => {
       </HStack>
       <Text fontSize="18px">{loading ? "-" : bio}</Text>
     </VStack>
+  );
+};
+
+const UserPosts = ({ username }) => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const data = await get_users_posts(username);
+        setPosts(data);
+      } catch {
+        alert("Error fetching users posts");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+    // }, []);
+  }, [username]);
+  return (
+    <Flex w="100%" wrap="wrap" gap="30px" pb="50px">
+      {loading ? (
+        <Text>Loading...</Text>
+      ) : (
+        posts.map((p) => (
+          <Post
+            key={`post-${p.id}`}
+            id={p.id}
+            username={p.username}
+            description={p.description}
+            formatted_date={p.formatted_date}
+            liked={p.liked}
+            like_count={p.like_count}
+          />
+        ))
+      )}
+    </Flex>
   );
 };

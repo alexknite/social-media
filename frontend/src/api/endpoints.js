@@ -72,3 +72,13 @@ export const toggle_follow = async (username) => {
   });
   return res.data;
 };
+
+export const get_users_posts = async (username) => {
+  const res = await api.get(`/posts/${username}/`);
+  return res.data;
+};
+
+export const toggle_like = async (id) => {
+  const res = await api.post("/toggle_like/", { id: id });
+  return res.data;
+};
