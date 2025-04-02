@@ -1,12 +1,19 @@
 from rest_framework.decorators import (api_view, authentication_classes,
                                        permission_classes)
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
 from .models import MyUser
 from .serializers import MyUserProfileSerializer, UserRegisterSerializer
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+# @authentication_classes([])
+def authenticated(request):
+    return Response("authenticated!")
 
 
 @api_view(["POST"])

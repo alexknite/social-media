@@ -8,23 +8,18 @@ import {
   Heading,
   Text,
 } from "@chakra-ui/react";
-import { login } from "../api/endpoints";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/useAuth";
 
 export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const nav = useNavigate();
+  const { auth_login } = useAuth();
 
-  const handleLogin = async () => {
-    const data = await login(username, password);
-
-    if (data.success) {
-      nav(`/${username}`);
-    } else {
-      alert("Invalid username or password");
-    }
+  const handleLogin = () => {
+    auth_login(username, password);
   };
 
   return (

@@ -35,7 +35,7 @@ export const get_user_profile_data = async (username) => {
 };
 
 const refresh_token = async () => {
-  const res = await api.post("/token/refresh");
+  const res = await api.post("/token/refresh/");
   return res.data;
 };
 
@@ -58,5 +58,10 @@ export const register = async (
     last_name: lastName,
     password: password,
   });
+  return res.data;
+};
+
+export const get_auth = async () => {
+  const res = await api.get(`/authenticated/`);
   return res.data;
 };
