@@ -43,3 +43,20 @@ export const login = async (username, password) => {
   const res = await api.post("/token/", { username, password });
   return res.data;
 };
+
+export const register = async (
+  username,
+  email,
+  firstName,
+  lastName,
+  password,
+) => {
+  const res = await api.post("/register/", {
+    username: username,
+    email: email,
+    first_name: firstName,
+    last_name: lastName,
+    password: password,
+  });
+  return res.data;
+};

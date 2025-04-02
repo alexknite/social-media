@@ -6,6 +6,7 @@ import {
   Input,
   Button,
   Heading,
+  Text,
 } from "@chakra-ui/react";
 import { login } from "../api/endpoints";
 import { useState } from "react";
@@ -51,14 +52,24 @@ export const Login = () => {
             type="password"
           />
         </FormControl>
-        <Button
-          onClick={handleLogin}
-          w="100%"
-          colorScheme="green"
-          fontSize="18px"
-        >
-          Login
-        </Button>
+        <VStack w="100%" alignItems="center">
+          <Button
+            onClick={handleLogin}
+            w="100%"
+            colorScheme="green"
+            fontSize="18px"
+          >
+            Login
+          </Button>
+          <Text
+            onClick={() => nav("/register")}
+            cursor="pointer"
+            fontSize="14px"
+            color="gray.500"
+          >
+            Don't have an account? Register
+          </Text>
+        </VStack>
       </VStack>
     </Flex>
   );

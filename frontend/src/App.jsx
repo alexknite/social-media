@@ -3,6 +3,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { UserProfile } from "./routes/UserProfile";
 import { Layout } from "./components/Layout";
 import { Login } from "./routes/Login";
+import { Register } from "./routes/Register";
 
 function App() {
   return (
@@ -24,6 +25,14 @@ function App() {
               </Layout>
             }
             path="/login"
+          />
+          <Route
+            element={
+              <Layout>
+                <Register />
+              </Layout>
+            }
+            path="/register"
           />
         </Routes>
       </Router>
