@@ -80,7 +80,7 @@ const UserDetails = ({ username }) => {
         <VStack gap="20px">
           <HStack gap="20px" fontSize="18px">
             <VStack>
-              <Text>Follwers</Text>
+              <Text>Followers</Text>
               <Text>{loading ? '-' : followerCount}</Text>
             </VStack>
             <VStack>
