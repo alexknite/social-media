@@ -2,13 +2,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 
-from .views import (CustomTokenObtainPairView, CustomTokenRefreshView, authenticated,
-                    get_user_profile_data, register)
+from .views import (CustomTokenObtainPairView, CustomTokenRefreshView,
+                    authenticated, get_user_profile_data, register, toggle_follow)
 
 urlpatterns = [
     path("user_data/<str:pk>/", get_user_profile_data),
     path("token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"),
     path("register/", register),
-    path('authenticated/', authenticated)
+    path('authenticated/', authenticated),
+    path('toggle_follow/', toggle_follow)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

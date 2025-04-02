@@ -65,3 +65,10 @@ export const get_auth = async () => {
   const res = await api.get(`/authenticated/`);
   return res.data;
 };
+
+export const toggle_follow = async (username) => {
+  const res = await api.post("/toggle_follow/", {
+    username: username,
+  });
+  return res.data;
+};
