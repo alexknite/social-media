@@ -1,11 +1,6 @@
 import { Flex, HStack, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import {
-  LuCirclePlus,
-  LuCircleUser,
-  LuSearch,
-  LuSettings,
-} from "react-icons/lu";
+import { LuCirclePlus, LuCircleUser, LuSearch } from "react-icons/lu";
 
 export const Navbar = () => {
   const nav = useNavigate();
@@ -29,7 +24,7 @@ export const Navbar = () => {
     >
       <HStack w="90%" justifyContent="space-between" color="white">
         <Text
-          onClick={(route) => handleNavigation("")}
+          onClick={() => handleNavigation("")}
           cursor="pointer"
           fontSize="24px"
           fontWeight="bold"
@@ -37,26 +32,17 @@ export const Navbar = () => {
           Social Media
         </Text>
         <HStack gap="15px">
-          <Text
-            onClick={(route) => handleNavigation("create/post")}
-            cursor="pointer"
-          >
-            <LuCirclePlus size="30px" />
+          <Text onClick={() => handleNavigation("search")} cursor="pointer">
+            <LuSearch size="30px" />
           </Text>
           <Text onClick={handleNavigateUser} cursor="pointer">
             <LuCircleUser size="30px" />
           </Text>
           <Text
-            onClick={(route) => handleNavigation("settings")}
+            onClick={() => handleNavigation("create/post")}
             cursor="pointer"
           >
-            <LuSettings size="30px" />
-          </Text>
-          <Text
-            onClick={(route) => handleNavigation("search")}
-            cursor="pointer"
-          >
-            <LuSearch size="30px" />
+            <LuCirclePlus size="30px" />
           </Text>
         </HStack>
       </HStack>

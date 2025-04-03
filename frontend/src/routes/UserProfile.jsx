@@ -17,6 +17,7 @@ import {
 } from "../api/endpoints";
 import { SERVER_URL } from "../constants/constants";
 import { Post } from "../components/Post";
+import { useNavigate } from "react-router-dom";
 
 export const UserProfile = () => {
   const get_username_from_url = () => {
@@ -52,6 +53,11 @@ const UserDetails = ({ username }) => {
   const [followingCount, setFollowingCount] = useState(0);
   const [isOurProfile, setIsOurProfile] = useState(false);
   const [following, setIsFollowing] = useState(false);
+  const nav = useNavigate();
+
+  const handleNavigation = (route) => {
+    nav(`/${route}`);
+  };
 
   const handleToggleFollow = async () => {
     const data = await toggle_follow(username);
@@ -115,7 +121,9 @@ const UserDetails = ({ username }) => {
           {loading ? (
             <Spacer />
           ) : isOurProfile ? (
-            <Button w="100%">Edit Profile</Button>
+            <Button onClick={() => handleNavigation("settings")} w="100%">
+              Edit Profile
+            </Button>
           ) : (
             <Button onClick={handleToggleFollow} colorScheme="blue" w="100%">
               {following ? "Unfollow" : "Follow"}
@@ -144,7 +152,6 @@ const UserPosts = ({ username }) => {
       }
     };
     fetchPosts();
-    // }, []);
   }, [username]);
   return (
     <Flex w="100%" wrap="wrap" gap="30px" pb="50px">
