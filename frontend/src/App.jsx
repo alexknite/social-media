@@ -9,6 +9,7 @@ import { PrivateRoute } from "./components/PrivateRoute";
 import { CreatePost } from "./routes/CreatePost";
 import { Home } from "./routes/Home";
 import { Search } from "./routes/Search";
+import { Settings } from "./routes/Settings";
 
 function App() {
   return (
@@ -55,6 +56,16 @@ function App() {
                 </Layout>
               }
               path="/search"
+            />
+            <Route
+              element={
+                <Layout>
+                  <PrivateRoute>
+                    <Settings />
+                  </PrivateRoute>
+                </Layout>
+              }
+              path="/settings"
             />
             <Route
               element={

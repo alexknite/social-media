@@ -35,9 +35,24 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
             access_token = tokens["access"]
             refresh_token = tokens["refresh"]
+            username = request.data["username"]
+
+            try:
+                user = MyUser.objects.get(username=username)
+            except MyUser.DoesNotExist:
+                return Response({"error": "User does not exist"})
 
             res = Response()
-            res.data = {"success": True}
+            res.data = {
+                "success": True,
+                "user": {
+                    "username": user.username,
+                    "bio": user.bio,
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                },
+            }
             res.set_cookie(
                 key="access_token",
                 value=access_token,
@@ -245,3 +260,36 @@ def search_users(request):
     users = MyUser.objects.filter(username__icontains=query)
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def update_user_details(request):
+    data = request.data
+
+    try:
+        user = MyUser.objects.get(username=request.user.username)
+    except MyUser.DoesNotExist:
+        return Response({"error": "User does not exist"})
+
+    serializer = UserSerializer(user, data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response({**serializer.data, "success": True})
+
+    return Response({**serializer.errors, "success": False})
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    try:
+        res = Response()
+        res.data = {"success": True}
+        res.delete_cookie("access_token", path="/", samesite="None")
+        res.delete_cookie("refresh_token", path="/", samesite="None")
+        return res
+
+    except:
+        return Response({"success": False})
