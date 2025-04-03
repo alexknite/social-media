@@ -1,5 +1,5 @@
 import { useEffect, useState, createContext, useContext } from "react";
-import { get_auth, login } from "../api/endpoints";
+import { get_auth, login, logout } from "../api/endpoints";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
@@ -39,13 +39,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const auth_logout = async () => {
+    const data = await logout();
+    if (data.success) {
+      setAuth(false);
+      nav("/login");
+    } else {
+      alert("Error loggin out");
+    }
+  };
+
   useEffect(() => {
     check_auth();
     // }, [window.location.pathname]);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ auth, authLoading, auth_login }}>
+    <AuthContext.Provider
+      value={{ auth, authLoading, auth_login, auth_logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
