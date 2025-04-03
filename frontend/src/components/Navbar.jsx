@@ -1,6 +1,7 @@
-import { Flex, HStack, Text } from "@chakra-ui/react";
+import { Box, Flex, HStack, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { LuCirclePlus, LuCircleUser, LuSearch } from "react-icons/lu";
+import { LuCirclePlus, LuCircleUser, LuLogOut, LuSearch } from "react-icons/lu";
+import { logout } from "../api/endpoints";
 
 export const Navbar = () => {
   const nav = useNavigate();
@@ -13,6 +14,15 @@ export const Navbar = () => {
     const user = JSON.parse(localStorage.getItem("userData"))["username"];
     nav(`/${user}`);
     window.location.reload();
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      nav("/login");
+    } catch {
+      alert("Error logging out!");
+    }
   };
   return (
     <Flex
@@ -44,6 +54,11 @@ export const Navbar = () => {
           >
             <LuCirclePlus size="30px" />
           </Text>
+          <Box ml='10px'>
+            <Text onClick={handleLogout} cursor="pointer">
+              <LuLogOut size="30px" />
+            </Text>
+          </Box>
         </HStack>
       </HStack>
     </Flex>

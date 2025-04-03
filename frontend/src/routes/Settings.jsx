@@ -5,13 +5,11 @@ import {
   FormLabel,
   Heading,
   Input,
-  Text,
   Textarea,
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { logout, update_user } from "../api/endpoints";
-import { useNavigate } from "react-router-dom";
+import { update_user } from "../api/endpoints";
 
 export const Settings = () => {
   const storage = JSON.parse(localStorage.getItem("userData"));
@@ -25,15 +23,8 @@ export const Settings = () => {
   const [lastName, setLastName] = useState(storage ? storage.last_name : "");
   const [bio, setBio] = useState(storage ? storage.bio : "");
 
-  const nav = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      nav("/login");
-    } catch {
-      alert("Error logging out!");
-    }
+  const handleDelete = async () => {
+    console.log("Delete!");
   };
 
   const handleUpdate = async () => {
@@ -123,8 +114,8 @@ export const Settings = () => {
             Save Changes
           </Button>
         </VStack>
-        <Button onClick={handleLogout} colorScheme="red">
-          Logout
+        <Button onClick={handleDelete} colorScheme="red">
+          Delete User
         </Button>
       </VStack>
     </Flex>
