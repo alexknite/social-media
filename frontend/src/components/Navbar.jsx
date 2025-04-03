@@ -54,7 +54,7 @@ export const Navbar = () => {
           >
             <LuCirclePlus size="30px" />
           </Text>
-          <Box ml='10px'>
+          <Box ml="10px">
             <Text onClick={handleLogout} cursor="pointer">
               <LuLogOut size="30px" />
             </Text>
