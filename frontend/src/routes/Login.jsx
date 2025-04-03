@@ -7,6 +7,7 @@ import {
   Button,
   Heading,
   Text,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -18,8 +19,15 @@ export const Login = () => {
   const nav = useNavigate();
   const { auth_login } = useAuth();
 
+  const missingUsername = username === "";
+  const missingPassword = password === "";
+
   const handleLogin = () => {
-    auth_login(username, password);
+    if (missingUsername || missingPassword) {
+      alert("Please complete all required fields.");
+    } else {
+      auth_login(username, password);
+    }
   };
 
   return (
@@ -31,21 +39,33 @@ export const Login = () => {
     >
       <VStack w="95%" maxW="400px" alignItems="start" gap="30px">
         <Heading>Login</Heading>
-        <FormControl>
-          <FormLabel>Username</FormLabel>
-          <Input
-            onChange={(e) => setUsername(e.target.value)}
-            bg="white"
-            type="text"
-          />
+        <FormControl isInvalid={missingUsername}>
+          <VStack w="100%" gap="10px" alignItems="start">
+            {missingUsername ? (
+              <FormErrorMessage>Username is required.</FormErrorMessage>
+            ) : (
+              <FormLabel>Username</FormLabel>
+            )}
+            <Input
+              onChange={(e) => setUsername(e.target.value)}
+              bg="white"
+              type="text"
+            />
+          </VStack>
         </FormControl>
-        <FormControl>
-          <FormLabel>Password</FormLabel>
-          <Input
-            onChange={(e) => setPassword(e.target.value)}
-            bg="white"
-            type="password"
-          />
+        <FormControl isInvalid={missingPassword}>
+          <VStack w="100%" gap="10px" alignItems="start">
+            {missingPassword ? (
+              <FormErrorMessage>Password is required.</FormErrorMessage>
+            ) : (
+              <FormLabel>Password</FormLabel>
+            )}
+            <Input
+              onChange={(e) => setPassword(e.target.value)}
+              bg="white"
+              type="password"
+            />
+          </VStack>
         </FormControl>
         <VStack w="100%" alignItems="center">
           <Button

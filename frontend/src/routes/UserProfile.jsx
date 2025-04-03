@@ -101,11 +101,15 @@ const UserDetails = ({ username }) => {
           bg="white"
           overflow="hidden"
         >
-          <Image
-            src={loading ? null : `${SERVER_URL}${profileImage}/`}
-            boxSize="100%"
-            objectFit="cover"
-          />
+          {profileImage ? (
+            <Image
+              src={loading ? null : `${SERVER_URL}${profileImage}/`}
+              boxSize="100%"
+              objectFit="cover"
+            />
+          ) : (
+            <></>
+          )}
         </Box>
         <VStack gap="20px">
           <HStack gap="20px" fontSize="18px">
