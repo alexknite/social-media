@@ -43,20 +43,20 @@ export const Navbar = () => {
         </Text>
         <HStack gap="15px">
           <Text onClick={() => handleNavigation("search")} cursor="pointer">
-            <LuSearch size="30px" />
+            <LuSearch size="25px" />
           </Text>
           <Text onClick={handleNavigateUser} cursor="pointer">
-            <LuCircleUser size="30px" />
+            <LuCircleUser size="25px" />
           </Text>
           <Text
             onClick={() => handleNavigation("create/post")}
             cursor="pointer"
           >
-            <LuCirclePlus size="30px" />
+            <LuCirclePlus size="25px" />
           </Text>
           <Box ml="10px">
             <Text onClick={handleLogout} cursor="pointer">
-              <LuLogOut size="30px" />
+              <LuLogOut size="25px" />
             </Text>
           </Box>
         </HStack>
