@@ -2,6 +2,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Box, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { toggle_like } from "../api/endpoints";
+import { useNavigate } from "react-router-dom";
 
 export const Post = ({
   id,
@@ -13,6 +14,11 @@ export const Post = ({
 }) => {
   const [clientLiked, setClientLiked] = useState(liked);
   const [clientLikeCount, setClientLikedCount] = useState(like_count);
+
+  const nav = useNavigate();
+  const handleNavigation = (route) => {
+    nav(`/${route}`);
+  };
 
   const handleToggleLike = async () => {
     const data = await toggle_like(id);
@@ -28,7 +34,7 @@ export const Post = ({
   return (
     <VStack
       w="400px"
-      h="400px"
+      h="200px"
       border="1px solid"
       borderColor="gray.400"
       borderRadius="8px"
@@ -38,11 +44,13 @@ export const Post = ({
         flex="1"
         borderBottom="1px solid"
         borderColor="gray.300"
-        p="0 20px"
+        p="10px 20px"
         bg="gray.50"
         borderRadius="8px 8px 0 0 "
       >
-        <Text>@{username}</Text>
+        <Text onClick={() => handleNavigation(username)} cursor="pointer">
+          @{username}
+        </Text>
       </HStack>
       <Flex
         flex="6"
@@ -65,9 +73,9 @@ export const Post = ({
       >
         <HStack w="90%" justifyContent="space-between">
           <HStack>
-            <Box onClick={handleToggleLike}>
+            <Box cursor="pointer" onClick={handleToggleLike}>
               {clientLiked ? (
-                <Box color='red.600'>
+                <Box color="red.600">
                   <FaHeart />
                 </Box>
               ) : (
