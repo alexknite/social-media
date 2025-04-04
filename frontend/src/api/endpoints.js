@@ -109,3 +109,8 @@ export const update_user = async (values) => {
   });
   return res.data;
 };
+
+export const delete_post = async (id) => {
+  const res = await api.delete(`/delete_post/${id}/`);
+  return res.data;
+}

@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.urls import path
 
 from .views import (CustomTokenObtainPairView, CustomTokenRefreshView,
-                    authenticated, create_post, get_posts,
+                    authenticated, create_post, delete_post, get_posts,
                     get_user_profile_data, get_users_posts, logout, register,
                     search_users, toggle_follow, toggle_like,
                     update_user_details)
@@ -22,4 +22,5 @@ urlpatterns = [
     path("search/", search_users),
     path("update_user/", update_user_details),
     path("logout/", logout),
+    path("delete_post/<int:id>/", delete_post),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

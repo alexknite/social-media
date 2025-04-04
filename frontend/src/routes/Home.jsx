@@ -47,6 +47,7 @@ export const Home = () => {
               formatted_date={p.formatted_date}
               liked={p.liked}
               like_count={p.like_count}
+              setPosts={setPosts}
             />
           ))
         ) : (

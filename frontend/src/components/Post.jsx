@@ -1,7 +1,8 @@
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { LuTrash2 } from "react-icons/lu";
 import { Box, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { useState } from "react";
-import { toggle_like } from "../api/endpoints";
+import { delete_post, toggle_like } from "../api/endpoints";
 import { useNavigate } from "react-router-dom";
 
 export const Post = ({
@@ -11,6 +12,7 @@ export const Post = ({
   formatted_date,
   liked,
   like_count,
+  setPosts,
 }) => {
   const [clientLiked, setClientLiked] = useState(liked);
   const [clientLikeCount, setClientLikedCount] = useState(like_count);
@@ -30,6 +32,12 @@ export const Post = ({
       setClientLikedCount(clientLikeCount - 1);
     }
   };
+  const handleDelete = async () => {
+    const data = await delete_post(id);
+    if (data.success) {
+      setPosts((prevPosts) => prevPosts.filter((p) => p.id !== id));
+    }
+  };
 
   return (
     <VStack
@@ -47,10 +55,14 @@ export const Post = ({
         p="10px 20px"
         bg="gray.50"
         borderRadius="8px 8px 0 0 "
+        justifyContent="space-between"
       >
         <Text onClick={() => handleNavigation(username)} cursor="pointer">
           @{username}
         </Text>
+        <Box onClick={handleDelete} cursor="pointer">
+          <LuTrash2 />
+        </Box>
       </HStack>
       <Flex
         flex="6"

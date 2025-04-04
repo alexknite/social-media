@@ -293,3 +293,22 @@ def logout(request):
 
     except:
         return Response({"success": False})
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_post(request, id):
+    try:
+        post = Post.objects.get(id=id)
+
+        if post.user.username != request.user.username:
+            return Response(
+                {"error": "You do not have permission to delete this post."}
+            )
+
+        post.delete()
+        return Response({"success": True})
+    except Post.DoesNotExist:
+        return Response({"error": "Post does not exist"})
+    except:
+        return Response({"success": False})
