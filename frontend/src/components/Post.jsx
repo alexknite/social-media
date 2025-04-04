@@ -14,8 +14,15 @@ export const Post = ({
   like_count,
   setPosts,
 }) => {
+  const storage = JSON.parse(localStorage.getItem("userData"));
+
   const [clientLiked, setClientLiked] = useState(liked);
   const [clientLikeCount, setClientLikedCount] = useState(like_count);
+  const [currentUser, setCurrentUser] = useState(
+    storage ? storage.username : "",
+  );
+
+  const canDelete = currentUser === username;
 
   const nav = useNavigate();
   const handleNavigation = (route) => {
@@ -60,9 +67,13 @@ export const Post = ({
         <Text onClick={() => handleNavigation(username)} cursor="pointer">
           @{username}
         </Text>
-        <Box onClick={handleDelete} cursor="pointer">
-          <LuTrash2 />
-        </Box>
+        {canDelete ? (
+          <Box onClick={handleDelete} cursor="pointer">
+            <LuTrash2 />
+          </Box>
+        ) : (
+          <></>
+        )}
       </HStack>
       <Flex
         flex="6"
