@@ -215,16 +215,24 @@ def toggle_like(request):
 def create_post(request):
     try:
         data = request.data
-        try:
-            user = MyUser.objects.get(username=request.user.username)
-        except MyUser.DoesNotExist:
-            return Response({"error": "User does not exist"})
+
+        user = MyUser.objects.get(username=request.user.username)
+
+        if user.muted:
+            return Response(
+                {
+                    "success": False,
+                    "error": "You are muted! Try again when you have been unmuted by an admin.",
+                }
+            )
 
         post = Post.objects.create(user=user, description=data["description"])
 
         serializer = PostSerializer(post, many=False)
 
         return Response(serializer.data)
+    except MyUser.DoesNotExist:
+        return Response({"error": "User does not exist"})
     except:
         return Response({"error": "Error creating post"})
 
@@ -357,3 +365,21 @@ def toggle_archived(request, id):
         return Response({"success": True, "archived": post.archived})
     except Post.DoesNotExist:
         return Response({"error": "Post does not exist"}, status=404)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def toggle_mute(request, username):
+    try:
+        user = MyUser.objects.get(username=username)
+
+        if (not request.user.role == MyUser.Role.ADMIN) or (
+            user.role == MyUser.Role.ADMIN
+        ):
+            return Response({"error": "You do not have permission to mute this user"})
+
+        user.muted = not user.muted
+        user.save()
+        return Response({"success": True})
+    except MyUser.DoesNotExist:
+        return Response({"error": "User not found"})

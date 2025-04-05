@@ -127,7 +127,7 @@ export const toggle_archived = async (id, archived) => {
   return res.data;
 };
 
-// export const admin_dashboard = async () => {
-//   const res = await api.get("/admin/");
-//   return res.data;
-// };
+export const toggle_muted = async (username) => {
+  const res = await api.post(`/toggle_muted/${username}/`);
+  return res.data;
+};

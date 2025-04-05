@@ -6,7 +6,7 @@ from .views import (CustomTokenObtainPairView, CustomTokenRefreshView,
                     authenticated, create_post, delete_post, delete_user,
                     get_posts, get_user_profile_data, get_users_posts, logout,
                     register, search_users, toggle_archived, toggle_follow,
-                    toggle_like, update_user_details)
+                    toggle_like, toggle_mute, update_user_details)
 
 urlpatterns = [
     path("user_data/<str:pk>/", get_user_profile_data),
@@ -25,4 +25,5 @@ urlpatterns = [
     path("delete_post/<int:id>/", delete_post),
     path("delete_user/<str:username>/", delete_user),
     path("toggle_archived/<int:id>/", toggle_archived),
+    path("toggle_muted/<str:username>/", toggle_mute),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

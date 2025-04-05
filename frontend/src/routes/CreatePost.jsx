@@ -16,11 +16,19 @@ export const CreatePost = () => {
   const nav = useNavigate();
 
   const handlePost = async () => {
-    try {
-      await create_post(description);
-      nav("/");
-    } catch {
-      alert("Error creating post");
+    if (description === "") {
+      alert("Please enter a description for your post.");
+    } else {
+      try {
+        const data = await create_post(description);
+        if (data.success) {
+          nav("/");
+        } else {
+          alert(data.error);
+        }
+      } catch {
+        alert("Error creating post");
+      }
     }
   };
 

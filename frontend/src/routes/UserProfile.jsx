@@ -17,6 +17,7 @@ import {
   get_user_profile_data,
   get_users_posts,
   toggle_follow,
+  toggle_muted,
 } from "../api/endpoints";
 import { SERVER_URL } from "../constants/constants";
 import { Post } from "../components/Post";
@@ -73,6 +74,7 @@ const UserDetails = ({
   const [followingCount, setFollowingCount] = useState(0);
   const [following, setIsFollowing] = useState(false);
   const [role, setRole] = useState(false);
+  const [muted, setMuted] = useState(false);
 
   const handleToggleFollow = async () => {
     const data = await toggle_follow(username);
@@ -96,6 +98,7 @@ const UserDetails = ({
         setIsOurProfile(data.is_our_profile);
         setIsFollowing(data.following);
         setRole(storage.role);
+        setMuted(data.muted);
       } catch {
         console.log("error");
       } finally {
@@ -108,7 +111,12 @@ const UserDetails = ({
   return (
     <VStack w="100%" alignItems="start" gap="40px">
       {!isOurProfile && role === "ADMIN" ? (
-        <AdminPanel username={username} handleNav={handleNav} />
+        <AdminPanel
+          username={username}
+          muted={muted}
+          setMuted={setMuted}
+          handleNav={handleNav}
+        />
       ) : (
         <></>
       )}
@@ -257,19 +265,24 @@ const UserPosts = ({ username, isOurProfile }) => {
   );
 };
 
-const AdminPanel = ({ username, handleNav }) => {
+const AdminPanel = ({ username, muted, setMuted, handleNav }) => {
   const handleDelete = async () => {
     const data = await delete_user(username);
 
     if (data.success) {
       handleNav("");
     } else {
-      alert(`There was an error deleting ${username}`);
+      alert(`There was an error deleting ${username}.`);
     }
   };
 
-  const handleToggleMute = () => {
-    console.log('Mute')
+  const handleToggleMute = async () => {
+    const data = await toggle_muted(username);
+    if (data.success) {
+      setMuted(!muted);
+    } else {
+      alert(data.error);
+    }
   };
   return (
     <Flex
@@ -285,7 +298,9 @@ const AdminPanel = ({ username, handleNav }) => {
           Admin Panel
         </Heading>
         <ButtonGroup colorScheme="green" spacing="20px" mt="10px">
-          <Button onClick={handleToggleMute}>Mute User</Button>
+          <Button onClick={handleToggleMute}>
+            {muted ? "Unmute" : "Mute"} User
+          </Button>
           <Button onClick={handleDelete} colorScheme="red">
             Delete User
           </Button>

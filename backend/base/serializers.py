@@ -37,6 +37,7 @@ class MyUserProfileSerializer(serializers.ModelSerializer):
             "profile_image",
             "follower_count",
             "following_count",
+            "muted",
         ]
 
     def get_follower_count(self, obj):
@@ -84,4 +85,5 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "role",
+            "muted",
         ]
