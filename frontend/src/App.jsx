@@ -10,6 +10,8 @@ import { CreatePost } from "./routes/CreatePost";
 import { Home } from "./routes/Home";
 import { Search } from "./routes/Search";
 import { Settings } from "./routes/Settings";
+import { AdminDashboard } from "./routes/AdminDashboard";
+import { AdminRoute } from "./components/AdminRoute";
 
 function App() {
   return (
@@ -82,6 +84,16 @@ function App() {
                 </Layout>
               }
               path="/register"
+            />
+            <Route
+              element={
+                <Layout>
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
+                </Layout>
+              }
+              path="/admin"
             />
           </Routes>
         </AuthProvider>

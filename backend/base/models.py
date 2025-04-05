@@ -3,12 +3,20 @@ from django.db import models
 
 
 class MyUser(AbstractUser):
+    class Role(models.TextChoices):
+        USER = (
+            "USER",
+            "User",
+        )
+        ADMIN = "ADMIN", "Admin"
+
     username = models.CharField(max_length=50, unique=True, primary_key=True)
     bio = models.CharField(max_length=500)
     profile_image = models.ImageField(upload_to="profile_image", blank=True, null=True)
     followers = models.ManyToManyField(
         "self", symmetrical=False, related_name="following", blank=True
     )
+    role = models.CharField(max_length=10, choices=Role.choices, default=Role.USER)
 
     def __str__(self):
         return self.username

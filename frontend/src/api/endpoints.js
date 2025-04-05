@@ -126,3 +126,8 @@ export const toggle_archived = async (id, archived) => {
   });
   return res.data;
 };
+
+// export const admin_dashboard = async () => {
+//   const res = await api.get("/admin/");
+//   return res.data;
+// };

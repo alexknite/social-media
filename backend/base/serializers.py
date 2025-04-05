@@ -9,7 +9,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyUser
-        fields = ["username", "email", "first_name", "last_name", "password"]
+        fields = ["username", "email", "first_name", "last_name", "password", "role"]
+        extra_kwargs = {"role": {"read_only": True}}
 
     def create(self, validated_data):
         user = MyUser(
@@ -19,6 +20,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             last_name=validated_data["last_name"],
         )
         user.set_password(validated_data["password"])
+        user.role = MyUser.Role.USER
         user.save()
         return user
 
@@ -81,4 +83,5 @@ class UserSerializer(serializers.ModelSerializer):
             "profile_image",
             "first_name",
             "last_name",
+            "role",
         ]
