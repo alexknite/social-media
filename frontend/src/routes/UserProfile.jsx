@@ -221,31 +221,31 @@ const UserPosts = ({ username, isOurProfile }) => {
           </Checkbox>
           {showArchived
             ? posts.all.map((p) => (
-              <Post
-                key={`post-${p.id}`}
-                id={p.id}
-                username={p.username}
-                description={p.description}
-                formatted_date={p.formatted_date}
-                liked={p.liked}
-                like_count={p.like_count}
-                archived={p.archived}
-                setPosts={setPosts}
-              />
-            ))
+                <Post
+                  key={`post-${p.id}`}
+                  id={p.id}
+                  username={p.username}
+                  description={p.description}
+                  formatted_date={p.formatted_date}
+                  liked={p.liked}
+                  like_count={p.like_count}
+                  archived={p.archived}
+                  setPosts={setPosts}
+                />
+              ))
             : posts.unarchived.map((p) => (
-              <Post
-                key={`post-${p.id}`}
-                id={p.id}
-                username={p.username}
-                description={p.description}
-                formatted_date={p.formatted_date}
-                liked={p.liked}
-                like_count={p.like_count}
-                archived={p.archived}
-                setPosts={setPosts}
-              />
-            ))}
+                <Post
+                  key={`post-${p.id}`}
+                  id={p.id}
+                  username={p.username}
+                  description={p.description}
+                  formatted_date={p.formatted_date}
+                  liked={p.liked}
+                  like_count={p.like_count}
+                  archived={p.archived}
+                  setPosts={setPosts}
+                />
+              ))}
         </VStack>
       ) : (
         posts.unarchived.map((p) => (
@@ -272,7 +272,7 @@ const AdminPanel = ({ username, muted, setMuted, handleNav }) => {
     if (data.success) {
       handleNav("");
     } else {
-      alert(`There was an error deleting ${username}.`);
+      alert(data.error);
     }
   };
 

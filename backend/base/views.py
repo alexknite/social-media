@@ -335,9 +335,14 @@ def delete_user(request, username):
     try:
         user = MyUser.objects.get(username=username)
 
-        if request.user.role != "ADMIN" and (user.username != request.user.username):
+        if (
+            request.user.role != "ADMIN" and (user.username != request.user.username)
+        ) or user.role == "ADMIN":
             return Response(
-                {"error": "You do not have permission to delete this user."}
+                {
+                    "error": "You do not have permission to delete this user.",
+                    "success": False,
+                }
             )
 
         user.delete()
