@@ -1,9 +1,11 @@
 import { Box, Flex, HStack, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { LuCirclePlus, LuCircleUser, LuLogOut, LuSearch } from "react-icons/lu";
+import { MdAdminPanelSettings } from "react-icons/md";
 import { useAuth } from "../contexts/useAuth";
 
 export const Navbar = () => {
+  const storage = JSON.parse(localStorage.getItem("userData"));
   const { auth, authLoading, auth_logout } = useAuth();
   const nav = useNavigate();
 
@@ -12,7 +14,7 @@ export const Navbar = () => {
   };
 
   const handleNavigateUser = () => {
-    const user = JSON.parse(localStorage.getItem("userData"))["username"];
+    const user = storage["username"];
     nav(`/${user}`);
     window.location.reload();
   };
@@ -20,6 +22,9 @@ export const Navbar = () => {
   const handleLogout = () => {
     auth_logout();
   };
+
+  const isAdmin = storage["role"] === "ADMIN";
+
   return (
     <Flex
       w="100vw"
@@ -41,6 +46,13 @@ export const Navbar = () => {
           <></>
         ) : auth ? (
           <HStack gap="15px">
+            {isAdmin ? (
+              <Text onClick={() => handleNavigation("admin")} cursor="pointer">
+                <MdAdminPanelSettings size="25px" />
+              </Text>
+            ) : (
+              <></>
+            )}
             <Text onClick={() => handleNavigation("search")} cursor="pointer">
               <LuSearch size="25px" />
             </Text>
