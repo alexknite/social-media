@@ -3,6 +3,7 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
@@ -10,10 +11,12 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { update_user } from "../api/endpoints";
+import { delete_user, update_user } from "../api/endpoints";
+import { useAuth } from "../contexts/useAuth";
 
 export const Settings = () => {
   const storage = JSON.parse(localStorage.getItem("userData"));
+  const { auth_logout } = useAuth();
 
   const [username, setUsername] = useState(storage ? storage.username : "");
   const [email, setEmail] = useState(storage ? storage.email : "");
@@ -23,13 +26,18 @@ export const Settings = () => {
   const [firstName, setFirstName] = useState(storage ? storage.first_name : "");
   const [lastName, setLastName] = useState(storage ? storage.last_name : "");
   const [bio, setBio] = useState(storage ? storage.bio : "");
+  const [confirmDelete, setConfirmDelete] = useState("");
 
   const missingUsername = username === "";
   const missingEmail = email === "";
   const missingBio = bio === "";
+  const missingConfirmDelete = confirmDelete !== username;
 
   const handleDelete = async () => {
-    console.log("Delete!");
+    if (!missingConfirmDelete) {
+      auth_logout();
+      await delete_user(username);
+    }
   };
 
   const handleUpdate = async () => {
@@ -142,9 +150,25 @@ export const Settings = () => {
             Save Changes
           </Button>
         </VStack>
-        <Button onClick={handleDelete} colorScheme="red">
-          Delete User
-        </Button>
+        <VStack w="100%" alignItems="start" gap="15px">
+          <FormControl isInvalid={missingConfirmDelete}>
+            <VStack alignItems="start">
+              <FormHelperText>
+                Confirm your account username, {username}, to delete your
+                account
+              </FormHelperText>
+              <Input
+                onChange={(e) => setConfirmDelete(e.target.value)}
+                value={confirmDelete}
+                bg="white"
+                type="text"
+              />
+            </VStack>
+          </FormControl>
+          <Button onClick={handleDelete} colorScheme="red">
+            Delete Account
+          </Button>
+        </VStack>
       </VStack>
     </Flex>
   );

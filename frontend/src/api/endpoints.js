@@ -113,4 +113,9 @@ export const update_user = async (values) => {
 export const delete_post = async (id) => {
   const res = await api.delete(`/delete_post/${id}/`);
   return res.data;
-}
+};
+
+export const delete_user = async (username) => {
+  const res = await api.delete(`/delete_user/${username}/`);
+  return res.data;
+};

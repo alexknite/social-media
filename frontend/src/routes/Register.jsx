@@ -23,6 +23,7 @@ export const Register = () => {
   const nav = useNavigate();
 
   const missingUsername = username === "";
+  //TODO confirm email is actually an email
   const missingEmail = email === "";
   const missingFirstName = firstName === "";
   const missingPassword = password === "";

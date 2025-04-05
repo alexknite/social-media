@@ -3,9 +3,9 @@ from django.conf.urls.static import static
 from django.urls import path
 
 from .views import (CustomTokenObtainPairView, CustomTokenRefreshView,
-                    authenticated, create_post, delete_post, get_posts,
-                    get_user_profile_data, get_users_posts, logout, register,
-                    search_users, toggle_follow, toggle_like,
+                    authenticated, create_post, delete_post, delete_user,
+                    get_posts, get_user_profile_data, get_users_posts, logout,
+                    register, search_users, toggle_follow, toggle_like,
                     update_user_details)
 
 urlpatterns = [
@@ -23,4 +23,5 @@ urlpatterns = [
     path("update_user/", update_user_details),
     path("logout/", logout),
     path("delete_post/<int:id>/", delete_post),
+    path("delete_user/<str:username>/", delete_user),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

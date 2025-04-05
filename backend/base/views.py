@@ -312,3 +312,21 @@ def delete_post(request, id):
         return Response({"error": "Post does not exist"})
     except:
         return Response({"success": False})
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_user(request, username):
+    try:
+        user = MyUser.objects.get(username=username)
+
+        if user.username != request.user.username:
+            return Response(
+                {"error": "You do not have permission to delete this user."}
+            )
+
+        user.delete()
+        return Response({"success": True})
+    except MyUser.DoesNotExist:
+        return Response({"error": "User does not exist"})
+    except:
+        return Response({"success": False})
