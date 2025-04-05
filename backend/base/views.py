@@ -155,14 +155,20 @@ def toggle_follow(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def get_users_posts(request, pk):
+def get_users_posts(request, pk, arch):
     try:
         user = MyUser.objects.get(username=pk)
         my_user = MyUser.objects.get(username=request.user.username)
     except MyUser.DoesNotExist:
         return Response({"error": "User does not exist"})
 
-    posts = user.posts.all().order_by("-created_at")
+    if arch == "archived":
+        posts = user.posts.filter(archived=True).order_by("-created_at")
+    elif arch == "unarchived":
+        posts = user.posts.filter(archived=False).order_by("-created_at")
+    else:
+        posts = user.posts.all().order_by("-created_at")
+
     serializer = PostSerializer(posts, many=True)
 
     data = []

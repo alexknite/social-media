@@ -146,17 +146,28 @@ const UserDetails = ({ username, isOurProfile, setIsOurProfile }) => {
 };
 
 const UserPosts = ({ username, isOurProfile }) => {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([
+    {
+      all: [],
+      // archived: [],
+      unarchived: [],
+    },
+  ]);
   const [loading, setLoading] = useState(true);
-  const [showArchived, setShowArchived] = useState(true);
-  const [renderedPosts, setRenderedPosts] = useState([]);
+  const [showArchived, setShowArchived] = useState(false);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const data = await get_users_posts(username);
-        setPosts(data);
-        setRenderedPosts(data);
+        const all = await get_users_posts(username, "all");
+        // const archived = await get_users_posts(username, "archived");
+        const unarchived = await get_users_posts(username, "unarchived");
+
+        setPosts({
+          all: all,
+          // archived: archived,
+          unarchived: unarchived,
+        });
       } catch {
         alert("Error fetching users posts");
       } finally {
@@ -168,15 +179,8 @@ const UserPosts = ({ username, isOurProfile }) => {
 
   const handleToggleShowArchived = (e) => {
     const archived = e.target.checked;
+    // console.log(posts);
     setShowArchived(archived);
-    console.log(archived);
-    setRenderedPosts(() => {
-      if (archived) {
-        return [...posts];
-      } else {
-        return [...posts.filter((p) => !p.archived)];
-      }
-    });
   };
 
   return (
@@ -191,35 +195,47 @@ const UserPosts = ({ username, isOurProfile }) => {
           >
             Show Archived
           </Checkbox>
-          {renderedPosts.map((p) => (
-            <Post
-              key={`post-${p.id}`}
-              id={p.id}
-              username={p.username}
-              description={p.description}
-              formatted_date={p.formatted_date}
-              liked={p.liked}
-              like_count={p.like_count}
-              archived={p.archived}
-              setPosts={setPosts}
-            />
-          ))}
+          {showArchived
+            ? posts.all.map((p) => (
+                <Post
+                  key={`post-${p.id}`}
+                  id={p.id}
+                  username={p.username}
+                  description={p.description}
+                  formatted_date={p.formatted_date}
+                  liked={p.liked}
+                  like_count={p.like_count}
+                  archived={p.archived}
+                  setPosts={setPosts}
+                />
+              ))
+            : posts.unarchived.map((p) => (
+                <Post
+                  key={`post-${p.id}`}
+                  id={p.id}
+                  username={p.username}
+                  description={p.description}
+                  formatted_date={p.formatted_date}
+                  liked={p.liked}
+                  like_count={p.like_count}
+                  archived={p.archived}
+                  setPosts={setPosts}
+                />
+              ))}
         </VStack>
       ) : (
-        posts
-          .filter((p) => p.archived == false)
-          .map((p) => (
-            <Post
-              key={`post-${p.id}`}
-              id={p.id}
-              username={p.username}
-              description={p.description}
-              formatted_date={p.formatted_date}
-              liked={p.liked}
-              like_count={p.like_count}
-              setPosts={setPosts}
-            />
-          ))
+        posts.unarchived.map((p) => (
+          <Post
+            key={`post-${p.id}`}
+            id={p.id}
+            username={p.username}
+            description={p.description}
+            formatted_date={p.formatted_date}
+            liked={p.liked}
+            like_count={p.like_count}
+            setPosts={setPosts}
+          />
+        ))
       )}
     </Flex>
   );

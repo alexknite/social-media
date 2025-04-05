@@ -44,7 +44,10 @@ export const Post = ({
   const handleDelete = async () => {
     const data = await delete_post(id);
     if (data.success) {
-      setPosts((prevPosts) => prevPosts.filter((p) => p.id !== id));
+      setPosts((prevPosts) => {
+        const updatedPosts = prevPosts.filter((p) => p.id !== id);
+        return [...updatedPosts];
+      });
     }
   };
   const handleToggleArchive = async () => {
@@ -52,6 +55,23 @@ export const Post = ({
     if (data.success) {
       setClientArchived(data.archived);
     }
+    setPosts((prevPosts) => {
+      const post = prevPosts.all.find((p) => p.id === id);
+      post.archived = data.archived;
+
+      let unarchived = prevPosts.unarchived;
+
+      if (data.archived) {
+        unarchived = [...prevPosts.unarchived.filter((p) => p.id !== id)];
+      } else {
+        unarchived = [...prevPosts.unarchived, post];
+      }
+
+      return {
+        all: prevPosts.all,
+        unarchived: unarchived,
+      };
+    });
   };
 
   return (

@@ -15,7 +15,7 @@ urlpatterns = [
     path("register/", register),
     path("authenticated/", authenticated),
     path("toggle_follow/", toggle_follow),
-    path("posts/<str:pk>/", get_users_posts),
+    path("posts/<str:pk>/<str:arch>", get_users_posts),
     path("toggle_like/", toggle_like),
     path("create_post/", create_post),
     path("get_posts/", get_posts),
