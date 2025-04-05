@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  ButtonGroup,
   Checkbox,
   Flex,
   Heading,
@@ -12,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
+  delete_user,
   get_user_profile_data,
   get_users_posts,
   toggle_follow,
@@ -28,6 +30,11 @@ export const UserProfile = () => {
 
   const [username, setUsername] = useState(get_username_from_url());
   const [isOurProfile, setIsOurProfile] = useState(false);
+  const nav = useNavigate();
+
+  const handleNav = (route) => {
+    nav(`/${route}`);
+  };
 
   useEffect(() => {
     setUsername(get_username_from_url());
@@ -41,6 +48,7 @@ export const UserProfile = () => {
             username={username}
             isOurProfile={isOurProfile}
             setIsOurProfile={setIsOurProfile}
+            handleNav={handleNav}
           />
         </Box>
         <Box w="100%" mt="30px">
@@ -51,18 +59,20 @@ export const UserProfile = () => {
   );
 };
 
-const UserDetails = ({ username, isOurProfile, setIsOurProfile }) => {
+const UserDetails = ({
+  username,
+  isOurProfile,
+  setIsOurProfile,
+  handleNav,
+}) => {
+  const storage = JSON.parse(localStorage.getItem("userData"));
   const [loading, setLoading] = useState(true);
   const [bio, setBio] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [following, setIsFollowing] = useState(false);
-  const nav = useNavigate();
-
-  const handleNavigation = (route) => {
-    nav(`/${route}`);
-  };
+  const [role, setRole] = useState(false);
 
   const handleToggleFollow = async () => {
     const data = await toggle_follow(username);
@@ -85,6 +95,7 @@ const UserDetails = ({ username, isOurProfile, setIsOurProfile }) => {
         setFollowingCount(data.following_count);
         setIsOurProfile(data.is_our_profile);
         setIsFollowing(data.following);
+        setRole(storage.role);
       } catch {
         console.log("error");
       } finally {
@@ -92,10 +103,15 @@ const UserDetails = ({ username, isOurProfile, setIsOurProfile }) => {
       }
     };
     fetchData();
-  }, [username, setIsOurProfile]);
+  });
 
   return (
     <VStack w="100%" alignItems="start" gap="40px">
+      {!isOurProfile && role === "ADMIN" ? (
+        <AdminPanel username={username} handleNav={handleNav} />
+      ) : (
+        <></>
+      )}
       <Heading>@{username}</Heading>
       <HStack gap="20px">
         <Box
@@ -130,7 +146,7 @@ const UserDetails = ({ username, isOurProfile, setIsOurProfile }) => {
           {loading ? (
             <Spacer />
           ) : isOurProfile ? (
-            <Button onClick={() => handleNavigation("settings")} w="100%">
+            <Button onClick={() => handleNav("settings")} w="100%">
               Edit Profile
             </Button>
           ) : (
@@ -197,31 +213,31 @@ const UserPosts = ({ username, isOurProfile }) => {
           </Checkbox>
           {showArchived
             ? posts.all.map((p) => (
-                <Post
-                  key={`post-${p.id}`}
-                  id={p.id}
-                  username={p.username}
-                  description={p.description}
-                  formatted_date={p.formatted_date}
-                  liked={p.liked}
-                  like_count={p.like_count}
-                  archived={p.archived}
-                  setPosts={setPosts}
-                />
-              ))
+              <Post
+                key={`post-${p.id}`}
+                id={p.id}
+                username={p.username}
+                description={p.description}
+                formatted_date={p.formatted_date}
+                liked={p.liked}
+                like_count={p.like_count}
+                archived={p.archived}
+                setPosts={setPosts}
+              />
+            ))
             : posts.unarchived.map((p) => (
-                <Post
-                  key={`post-${p.id}`}
-                  id={p.id}
-                  username={p.username}
-                  description={p.description}
-                  formatted_date={p.formatted_date}
-                  liked={p.liked}
-                  like_count={p.like_count}
-                  archived={p.archived}
-                  setPosts={setPosts}
-                />
-              ))}
+              <Post
+                key={`post-${p.id}`}
+                id={p.id}
+                username={p.username}
+                description={p.description}
+                formatted_date={p.formatted_date}
+                liked={p.liked}
+                like_count={p.like_count}
+                archived={p.archived}
+                setPosts={setPosts}
+              />
+            ))}
         </VStack>
       ) : (
         posts.unarchived.map((p) => (
@@ -237,6 +253,44 @@ const UserPosts = ({ username, isOurProfile }) => {
           />
         ))
       )}
+    </Flex>
+  );
+};
+
+const AdminPanel = ({ username, handleNav }) => {
+  const handleDelete = async () => {
+    const data = await delete_user(username);
+
+    if (data.success) {
+      handleNav("");
+    } else {
+      alert(`There was an error deleting ${username}`);
+    }
+  };
+
+  const handleToggleMute = () => {
+    console.log('Mute')
+  };
+  return (
+    <Flex
+      bg="gray.100"
+      borderRadius="10px"
+      w="100%"
+      h="130px"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <VStack w="100%" alignItems="start" p="20px">
+        <Heading fontWeight="200" fontSize="20px">
+          Admin Panel
+        </Heading>
+        <ButtonGroup colorScheme="green" spacing="20px" mt="10px">
+          <Button onClick={handleToggleMute}>Mute User</Button>
+          <Button onClick={handleDelete} colorScheme="red">
+            Delete User
+          </Button>
+        </ButtonGroup>
+      </VStack>
     </Flex>
   );
 };
