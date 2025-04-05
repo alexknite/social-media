@@ -119,3 +119,10 @@ export const delete_user = async (username) => {
   const res = await api.delete(`/delete_user/${username}/`);
   return res.data;
 };
+
+export const toggle_archived = async (id, archived) => {
+  const res = await api.patch(`/toggle_archived/${id}/`, {
+    archived: archived,
+  });
+  return res.data;
+};

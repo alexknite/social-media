@@ -38,18 +38,22 @@ export const Home = () => {
         {loading ? (
           <Text>Loading...</Text>
         ) : posts ? (
-          posts.map((p) => (
-            <Post
-              key={`post-${p.id}`}
-              id={p.id}
-              username={p.username}
-              description={p.description}
-              formatted_date={p.formatted_date}
-              liked={p.liked}
-              like_count={p.like_count}
-              setPosts={setPosts}
-            />
-          ))
+          posts.map((p) =>
+            p.archived ? (
+              ""
+            ) : (
+              <Post
+                key={`post-${p.id}`}
+                id={p.id}
+                username={p.username}
+                description={p.description}
+                formatted_date={p.formatted_date}
+                liked={p.liked}
+                like_count={p.like_count}
+                setPosts={setPosts}
+              />
+            ),
+          )
         ) : (
           <></>
         )}

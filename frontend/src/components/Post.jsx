@@ -1,8 +1,8 @@
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { LuTrash2 } from "react-icons/lu";
+import { LuArchive, LuArchiveRestore, LuTrash2 } from "react-icons/lu";
 import { Box, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { useState } from "react";
-import { delete_post, toggle_like } from "../api/endpoints";
+import { delete_post, toggle_archived, toggle_like } from "../api/endpoints";
 import { useNavigate } from "react-router-dom";
 
 export const Post = ({
@@ -12,6 +12,7 @@ export const Post = ({
   formatted_date,
   liked,
   like_count,
+  archived,
   setPosts,
 }) => {
   const storage = JSON.parse(localStorage.getItem("userData"));
@@ -21,8 +22,9 @@ export const Post = ({
   const [currentUser, setCurrentUser] = useState(
     storage ? storage.username : "",
   );
+  const [clientArchived, setClientArchived] = useState(archived);
 
-  const canDelete = currentUser === username;
+  const ownsPost = currentUser === username;
 
   const nav = useNavigate();
   const handleNavigation = (route) => {
@@ -45,6 +47,12 @@ export const Post = ({
       setPosts((prevPosts) => prevPosts.filter((p) => p.id !== id));
     }
   };
+  const handleToggleArchive = async () => {
+    const data = await toggle_archived(id, !clientArchived);
+    if (data.success) {
+      setClientArchived(data.archived);
+    }
+  };
 
   return (
     <VStack
@@ -64,13 +72,20 @@ export const Post = ({
         borderRadius="8px 8px 0 0 "
         justifyContent="space-between"
       >
-        <Text onClick={() => handleNavigation(username)} cursor="pointer">
-          @{username}
-        </Text>
-        {canDelete ? (
-          <Box onClick={handleDelete} cursor="pointer">
-            <LuTrash2 />
-          </Box>
+        {clientArchived ? (
+          <Text>Archived</Text>
+        ) : (
+          <Text onClick={() => handleNavigation(username)} cursor="pointer">
+            @{username}
+          </Text>
+        )}
+        {ownsPost ? (
+          <HStack>
+            <Box onClick={handleToggleArchive} cursor="pointer">
+              {clientArchived ? <LuArchiveRestore /> : <LuArchive />}
+            </Box>
+            <LuTrash2 onClick={handleDelete} cursor="pointer" />
+          </HStack>
         ) : (
           <></>
         )}

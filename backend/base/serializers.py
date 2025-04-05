@@ -58,6 +58,7 @@ class PostSerializer(serializers.ModelSerializer):
             "formatted_date",
             "likes",
             "like_count",
+            "archived",
         ]
 
     def get_username(self, obj):

@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Checkbox,
   Flex,
   Heading,
   HStack,
@@ -26,6 +27,7 @@ export const UserProfile = () => {
   };
 
   const [username, setUsername] = useState(get_username_from_url());
+  const [isOurProfile, setIsOurProfile] = useState(false);
 
   useEffect(() => {
     setUsername(get_username_from_url());
@@ -35,23 +37,26 @@ export const UserProfile = () => {
     <Flex w="100%" justifyContent="center">
       <VStack w="75%">
         <Box w="100%" mt="40px">
-          <UserDetails username={username} />
+          <UserDetails
+            username={username}
+            isOurProfile={isOurProfile}
+            setIsOurProfile={setIsOurProfile}
+          />
         </Box>
         <Box w="100%" mt="30px">
-          <UserPosts username={username} />
+          <UserPosts username={username} isOurProfile={isOurProfile} />
         </Box>
       </VStack>
     </Flex>
   );
 };
 
-const UserDetails = ({ username }) => {
+const UserDetails = ({ username, isOurProfile, setIsOurProfile }) => {
   const [loading, setLoading] = useState(true);
   const [bio, setBio] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
-  const [isOurProfile, setIsOurProfile] = useState(false);
   const [following, setIsFollowing] = useState(false);
   const nav = useNavigate();
 
@@ -87,7 +92,7 @@ const UserDetails = ({ username }) => {
       }
     };
     fetchData();
-  }, [username]);
+  }, [username, setIsOurProfile]);
 
   return (
     <VStack w="100%" alignItems="start" gap="40px">
@@ -140,15 +145,18 @@ const UserDetails = ({ username }) => {
   );
 };
 
-const UserPosts = ({ username }) => {
+const UserPosts = ({ username, isOurProfile }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showArchived, setShowArchived] = useState(true);
+  const [renderedPosts, setRenderedPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const data = await get_users_posts(username);
         setPosts(data);
+        setRenderedPosts(data);
       } catch {
         alert("Error fetching users posts");
       } finally {
@@ -157,23 +165,61 @@ const UserPosts = ({ username }) => {
     };
     fetchPosts();
   }, [username]);
+
+  const handleToggleShowArchived = (e) => {
+    const archived = e.target.checked;
+    setShowArchived(archived);
+    console.log(archived);
+    setRenderedPosts(() => {
+      if (archived) {
+        return [...posts];
+      } else {
+        return [...posts.filter((p) => !p.archived)];
+      }
+    });
+  };
+
   return (
     <Flex w="100%" wrap="wrap" gap="30px" pb="50px">
       {loading ? (
         <Text>Loading...</Text>
+      ) : isOurProfile ? (
+        <VStack w="100%" alignItems="start" gap="30px">
+          <Checkbox
+            isChecked={showArchived}
+            onChange={handleToggleShowArchived}
+          >
+            Show Archived
+          </Checkbox>
+          {renderedPosts.map((p) => (
+            <Post
+              key={`post-${p.id}`}
+              id={p.id}
+              username={p.username}
+              description={p.description}
+              formatted_date={p.formatted_date}
+              liked={p.liked}
+              like_count={p.like_count}
+              archived={p.archived}
+              setPosts={setPosts}
+            />
+          ))}
+        </VStack>
       ) : (
-        posts.map((p) => (
-          <Post
-            key={`post-${p.id}`}
-            id={p.id}
-            username={p.username}
-            description={p.description}
-            formatted_date={p.formatted_date}
-            liked={p.liked}
-            like_count={p.like_count}
-            setPosts={setPosts}
-          />
-        ))
+        posts
+          .filter((p) => p.archived == false)
+          .map((p) => (
+            <Post
+              key={`post-${p.id}`}
+              id={p.id}
+              username={p.username}
+              description={p.description}
+              formatted_date={p.formatted_date}
+              liked={p.liked}
+              like_count={p.like_count}
+              setPosts={setPosts}
+            />
+          ))
       )}
     </Flex>
   );

@@ -19,3 +19,4 @@ class Post(models.Model):
     description = models.CharField(max_length=400)
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(MyUser, related_name="post_likes", blank=True)
+    archived = models.BooleanField(default=False)
