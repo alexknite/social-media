@@ -29,3 +29,22 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(MyUser, related_name="post_likes", blank=True)
     archived = models.BooleanField(default=False)
+
+
+class Report(models.Model):
+    class Reason(models.TextChoices):
+        HARASSMENT = "HARASSMENT", "Harassment"
+        FRAUD = "FRAUD", "Fraud"
+        SPAM = "SPAM", "Spam"
+        INAPPROPRIATE = "INAPPROPRIATE"
+        OTHER = "OTHER", "Other"
+
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name="reports")
+    reporter = models.ForeignKey(
+        MyUser, on_delete=models.CASCADE, related_name="filed_reports"
+    )
+    reason = models.CharField(
+        max_length=15, choices=Reason.choices, default=Reason.OTHER
+    )
+    description = models.CharField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)

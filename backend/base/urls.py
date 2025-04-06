@@ -4,8 +4,9 @@ from django.urls import path
 
 from .views import (CustomTokenObtainPairView, CustomTokenRefreshView,
                     authenticated, create_post, delete_post, delete_user,
-                    get_posts, get_user_profile_data, get_users_posts, logout,
-                    register, search_users, toggle_archived, toggle_follow,
+                    get_reports, get_posts, get_user_profile_data,
+                    get_user_reports, get_users_posts, logout, register,
+                    report_user, search_users, toggle_archived, toggle_follow,
                     toggle_like, toggle_mute, update_user_details)
 
 urlpatterns = [
@@ -26,4 +27,7 @@ urlpatterns = [
     path("delete_user/<str:username>/", delete_user),
     path("toggle_archived/<int:id>/", toggle_archived),
     path("toggle_muted/<str:username>/", toggle_mute),
+    path("report_user/<str:username>/", report_user),
+    path("get_user_reports/<str:username>/", get_user_reports),
+    path("get_reports/", get_reports),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

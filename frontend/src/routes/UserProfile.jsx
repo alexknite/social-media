@@ -22,6 +22,7 @@ import {
 import { SERVER_URL } from "../constants/constants";
 import { Post } from "../components/Post";
 import { useNavigate } from "react-router-dom";
+import { TbMessageReport } from "react-icons/tb";
 
 export const UserProfile = () => {
   const get_username_from_url = () => {
@@ -87,6 +88,16 @@ const UserDetails = ({
     }
   };
 
+  const handleReport = () => {
+    localStorage.setItem(
+      "reportUser",
+      JSON.stringify({
+        username: username,
+      }),
+    );
+    handleNav("report");
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -120,7 +131,22 @@ const UserDetails = ({
       ) : (
         <></>
       )}
-      <Heading>@{username}</Heading>
+      <HStack w="100%" justifyContent="space-between" alignItems="center">
+        <Heading>@{username}</Heading>
+        {isOurProfile ? (
+          <></>
+        ) : (
+          <Button
+            variant="ghost"
+            colorScheme="red"
+            size="sm"
+            rightIcon={<TbMessageReport />}
+            onClick={handleReport}
+          >
+            Report
+          </Button>
+        )}
+      </HStack>{" "}
       <HStack gap="20px">
         <Box
           boxSize="150px"

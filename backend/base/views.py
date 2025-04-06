@@ -1,3 +1,5 @@
+from logging import log
+
 from rest_framework.decorators import (api_view, authentication_classes,
                                        permission_classes)
 from rest_framework.pagination import PageNumberPagination
@@ -6,9 +8,10 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
-from .models import MyUser, Post
+from .models import MyUser, Post, Report
 from .serializers import (MyUserProfileSerializer, PostSerializer,
-                          UserRegisterSerializer, UserSerializer)
+                          ReportSerializer, UserRegisterSerializer,
+                          UserSerializer)
 
 
 @api_view(["GET"])
@@ -388,3 +391,78 @@ def toggle_mute(request, username):
         return Response({"success": True})
     except MyUser.DoesNotExist:
         return Response({"error": "User not found"})
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def report_user(request, username):
+    try:
+        reported_user = MyUser.objects.get(username=username)
+        reporter = request.user
+        reason = request.data.get("reason", "").strip().upper()
+        description = request.data.get("description", "").strip()
+
+        if not description:
+            return Response({"error": "You must provide a description in your report."})
+
+        valid_reasons = [choice[0] for choice in Report.Reason.choices]
+        if reason not in valid_reasons:
+            return Response({"error": "You must provide a valid reason."})
+
+        Report.objects.create(
+            user=reported_user,
+            reporter=reporter,
+            reason=reason,
+            description=description,
+        )
+
+        return Response(
+            {
+                "success": True,
+                "message": f"Successfully filed a report against {reported_user.username}",
+            }
+        )
+    except MyUser.DoesNotExist:
+        return Response({"error": "User was not found."})
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_user_reports(request, username):
+    try:
+        if not request.user.role == MyUser.Role.ADMIN:
+            return Response(
+                {"error": "You do not have permission to view user reports."}
+            )
+
+        reported_user = MyUser.objects.get(username=username)
+
+        reports = Report.objects.filter(user=reported_user)
+        serializer = ReportSerializer(reports, many=True)
+
+        return Response(serializer.data)
+    except MyUser.DoesNotExist:
+        return Response({"error": "User not found."})
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_reports(request):
+    try:
+        if request.user.role != MyUser.Role.ADMIN:
+            return Response({"error": "You do not have access to view user reports."})
+
+        reports = Report.objects.all().order_by("-created_at")
+
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+
+        result_page = paginator.paginate_queryset(reports, request)
+
+        serializer = ReportSerializer(result_page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
+    except:
+        return Response(
+            {"error": "There was an error fetching user reports. Try again later."}
+        )

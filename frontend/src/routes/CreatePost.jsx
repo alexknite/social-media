@@ -16,6 +16,7 @@ export const CreatePost = () => {
   const nav = useNavigate();
 
   const handlePost = async () => {
+    // TODO fix something here
     if (description === "") {
       alert("Please enter a description for your post.");
     } else {

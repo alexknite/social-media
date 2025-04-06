@@ -131,3 +131,13 @@ export const toggle_muted = async (username) => {
   const res = await api.post(`/toggle_muted/${username}/`);
   return res.data;
 };
+
+export const report_user = async (username, values) => {
+  const res = await api.post(`/report_user/${username}/`, values);
+  return res.data;
+};
+
+export const get_reports = async (num) => {
+  const res = await api.get(`/get_reports/?page=${num}`);
+  return res.data;
+};

@@ -12,6 +12,7 @@ import { Search } from "./routes/Search";
 import { Settings } from "./routes/Settings";
 import { AdminDashboard } from "./routes/AdminDashboard";
 import { AdminRoute } from "./components/AdminRoute";
+import { Report } from "./routes/Report";
 
 function App() {
   return (
@@ -95,6 +96,16 @@ function App() {
               }
               path="/admin"
             />
+            <Route
+              element={
+                <Layout>
+                  <PrivateRoute>
+                    <Report />
+                  </PrivateRoute>
+                </Layout>
+              }
+              path="/report"
+            />{" "}
           </Routes>
         </AuthProvider>
       </Router>
