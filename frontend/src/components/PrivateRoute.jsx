@@ -1,12 +1,12 @@
-import { Text } from "@chakra-ui/react";
 import { useAuth } from "../contexts/useAuth";
 import { Navigate } from "react-router-dom";
+import { Loading } from "./Loading";
 
 export const PrivateRoute = ({ children }) => {
   const { auth, authLoading } = useAuth();
 
   if (authLoading) {
-    return <Text>Loading...</Text>;
+    return <Loading />;
   }
 
   if (auth) {

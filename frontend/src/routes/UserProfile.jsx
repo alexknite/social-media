@@ -121,7 +121,9 @@ const UserDetails = ({
 
   return (
     <VStack w="100%" alignItems="start" gap="40px">
-      {!isOurProfile && role === "ADMIN" ? (
+      {loading ? (
+        <Spacer />
+      ) : !isOurProfile && role === "ADMIN" ? (
         <AdminPanel
           username={username}
           muted={muted}
@@ -133,7 +135,9 @@ const UserDetails = ({
       )}
       <HStack w="100%" justifyContent="space-between" alignItems="center">
         <Heading>@{username}</Heading>
-        {isOurProfile ? (
+        {loading ? (
+          <Spacer />
+        ) : isOurProfile ? (
           <></>
         ) : (
           <Button
@@ -146,7 +150,7 @@ const UserDetails = ({
             Report
           </Button>
         )}
-      </HStack>{" "}
+      </HStack>
       <HStack gap="20px">
         <Box
           boxSize="150px"
@@ -236,7 +240,7 @@ const UserPosts = ({ username, isOurProfile }) => {
   return (
     <Flex w="100%" wrap="wrap" gap="30px" pb="50px">
       {loading ? (
-        <Text>Loading...</Text>
+        <Spacer />
       ) : isOurProfile ? (
         <VStack w="100%" alignItems="start" gap="30px">
           <Checkbox

@@ -1,4 +1,4 @@
-import { Button, Flex, Heading, Text, VStack } from "@chakra-ui/react";
+import { Button, Flex, Heading, Spacer, Text, VStack } from "@chakra-ui/react";
 
 import { useEffect, useState } from "react";
 import { get_posts } from "../api/endpoints";
@@ -36,7 +36,7 @@ export const Home = () => {
       <VStack alignItems="start" gap="20px" pb="60px">
         <Heading>Posts</Heading>
         {loading ? (
-          <Text>Loading...</Text>
+          <Spacer />
         ) : posts ? (
           posts.map((p) =>
             p.archived ? (
@@ -57,7 +57,7 @@ export const Home = () => {
         ) : (
           <></>
         )}
-        {nextPage && !loading && (
+        {!loading && nextPage && (
           <Button onClick={loadMorePosts} w="100%">
             Load More
           </Button>

@@ -62,7 +62,7 @@ export const UserReports = () => {
             <Tbody>
               {loading ? (
                 <Tr>
-                  <Td colSpan="5">Loading...</Td>
+                  <Td colSpan="6">Loading...</Td>
                 </Tr>
               ) : reports.length > 0 ? (
                 reports.map((r) => (
@@ -80,7 +80,7 @@ export const UserReports = () => {
                 ))
               ) : (
                 <Tr>
-                  <Td colSpan="5">No reports found.</Td>
+                  <Td colSpan="6">No reports found.</Td>
                 </Tr>
               )}
             </Tbody>
