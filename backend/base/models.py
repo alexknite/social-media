@@ -11,7 +11,7 @@ class MyUser(AbstractUser):
         ADMIN = "ADMIN", "Admin"
 
     username = models.CharField(max_length=50, unique=True, primary_key=True)
-    bio = models.CharField(max_length=500)
+    bio = models.CharField(max_length=500, blank=True)
     profile_image = models.ImageField(upload_to="profile_image", blank=True, null=True)
     followers = models.ManyToManyField(
         "self", symmetrical=False, related_name="following", blank=True

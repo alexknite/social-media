@@ -30,7 +30,6 @@ export const Settings = () => {
 
   const missingUsername = username === "";
   const missingEmail = email === "";
-  const missingBio = bio === "";
   const missingConfirmDelete = confirmDelete !== username;
 
   const handleDelete = async () => {
@@ -41,7 +40,7 @@ export const Settings = () => {
   };
 
   const handleUpdate = async () => {
-    if (missingUsername || missingEmail || missingBio) {
+    if (missingUsername || missingEmail) {
       alert("Please complete all required fields.");
     } else {
       try {
@@ -131,13 +130,9 @@ export const Settings = () => {
               type="text"
             />
           </FormControl>
-          <FormControl isInvalid={missingBio}>
+          <FormControl>
             <VStack w="100%" gap="5px" alignItems="start">
-              {missingBio ? (
-                <FormErrorMessage>Bio is required.</FormErrorMessage>
-              ) : (
-                <FormLabel>Bio</FormLabel>
-              )}
+              <FormLabel>Bio</FormLabel>
               <Textarea
                 onChange={(e) => setBio(e.target.value)}
                 value={bio}
