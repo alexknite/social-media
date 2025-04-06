@@ -1,4 +1,4 @@
-from logging import log
+# TODO add status codes
 
 from rest_framework.decorators import (api_view, authentication_classes,
                                        permission_classes)
@@ -217,23 +217,26 @@ def toggle_like(request):
 @permission_classes([IsAuthenticated])
 def create_post(request):
     try:
-        data = request.data
 
         user = MyUser.objects.get(username=request.user.username)
 
         if user.muted:
             return Response(
                 {
-                    "success": False,
                     "error": "You are muted! Try again when you have been unmuted by an admin.",
                 }
             )
 
-        post = Post.objects.create(user=user, description=data["description"])
+        description = request.data["description"]
+
+        if description == "":
+            return Response({"error": "You must enter a description for your post."})
+
+        post = Post.objects.create(user=user, description=description)
 
         serializer = PostSerializer(post, many=False)
 
-        return Response(serializer.data)
+        return Response({"success": True, "post": serializer.data})
     except MyUser.DoesNotExist:
         return Response({"error": "User does not exist"})
     except:
