@@ -51,6 +51,7 @@ export const Home = () => {
                 liked={p.liked}
                 like_count={p.like_count}
                 setPosts={setPosts}
+                home={true}
               />
             ),
           )

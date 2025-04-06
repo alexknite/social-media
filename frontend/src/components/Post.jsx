@@ -14,17 +14,16 @@ export const Post = ({
   like_count,
   archived,
   setPosts,
+  home,
 }) => {
   const storage = JSON.parse(localStorage.getItem("userData"));
 
   const [clientLiked, setClientLiked] = useState(liked);
   const [clientLikeCount, setClientLikedCount] = useState(like_count);
-  const [currentUser, setCurrentUser] = useState(
-    storage ? storage.username : "",
-  );
   const [clientArchived, setClientArchived] = useState(archived);
 
-  const ownsPost = currentUser === username;
+  const ownsPost = (storage ? storage.username : "") === username;
+  const isAdmin = (storage ? storage.role : "") === "ADMIN";
 
   const nav = useNavigate();
   const handleNavigation = (route) => {
@@ -56,21 +55,25 @@ export const Post = ({
       setClientArchived(data.archived);
     }
     setPosts((prevPosts) => {
-      const post = prevPosts.all.find((p) => p.id === id);
-      post.archived = data.archived;
-
-      let unarchived = prevPosts.unarchived;
-
-      if (data.archived) {
-        unarchived = [...prevPosts.unarchived.filter((p) => p.id !== id)];
+      if (home) {
+        return [...prevPosts.filter((p) => p.id !== id)];
       } else {
-        unarchived = [...prevPosts.unarchived, post];
-      }
+        const post = prevPosts.all.find((p) => p.id === id);
+        post.archived = data.archived;
 
-      return {
-        all: prevPosts.all,
-        unarchived: unarchived,
-      };
+        let unarchived = prevPosts.unarchived;
+
+        if (data.archived) {
+          unarchived = [...prevPosts.unarchived.filter((p) => p.id !== id)];
+        } else {
+          unarchived = [...prevPosts.unarchived, post];
+        }
+
+        return {
+          all: prevPosts.all,
+          unarchived: unarchived,
+        };
+      }
     });
   };
 
@@ -99,7 +102,7 @@ export const Post = ({
             @{username}
           </Text>
         )}
-        {ownsPost ? (
+        {ownsPost || isAdmin ? (
           <HStack>
             <Box onClick={handleToggleArchive} cursor="pointer">
               {clientArchived ? <LuArchiveRestore /> : <LuArchive />}

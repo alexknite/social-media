@@ -339,15 +339,17 @@ def delete_post(request, id):
     try:
         post = Post.objects.get(id=id)
 
-        if post.user.username != request.user.username:
-            return Response(
-                {"error": "You do not have permission to delete this post."}
-            )
+        if (
+            request.user.role == MyUser.Role.ADMIN
+            or post.user.username == request.user.username
+        ):
+            post.delete()
+            return Response({"success": True})
 
-        post.delete()
-        return Response({"success": True})
+        return Response({"error": "You do not have permission to delete this post."})
+
     except Post.DoesNotExist:
-        return Response({"error": "Post does not exist"})
+        return Response({"error": "Post does not exist"}, status=404)
     except:
         return Response({"success": False})
 
@@ -382,17 +384,23 @@ def toggle_archived(request, id):
     try:
         post = Post.objects.get(id=id)
 
-        if post.user.username != request.user.username:
-            return Response(
-                {"error": "You do not have permission to archive this post"}, status=403
-            )
+        if (
+            request.user.role == MyUser.Role.ADMIN
+            or post.user.username == request.user.username
+        ):
+            post.archived = not post.archived
+            post.save()
 
-        post.archived = not post.archived
-        post.save()
+            return Response({"success": True, "archived": post.archived})
 
-        return Response({"success": True, "archived": post.archived})
+        return Response(
+            {"error": "You do not have permission to archive this post"}, status=403
+        )
+
     except Post.DoesNotExist:
         return Response({"error": "Post does not exist"}, status=404)
+    except:
+        return Response({"success": False})
 
 
 @api_view(["POST"])
