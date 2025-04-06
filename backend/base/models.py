@@ -18,6 +18,7 @@ class MyUser(AbstractUser):
     )
     role = models.CharField(max_length=10, choices=Role.choices, default=Role.USER)
     muted = models.BooleanField(default=False)
+    banned = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username

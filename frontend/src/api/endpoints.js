@@ -151,3 +151,8 @@ export const delete_report = async (id) => {
   const res = await api.delete(`/delete_report/${id}/`);
   return res.data;
 };
+
+export const toggle_banned = async (username) => {
+  const res = await api.post(`/toggle_banned/${username}/`);
+  return res.data;
+};

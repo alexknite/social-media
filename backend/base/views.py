@@ -44,10 +44,14 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             refresh_token = tokens["refresh"]
             username = request.data["username"]
 
-            if username == "":
-                return Response({"error": "You must enter a username to login."})
-
             user = MyUser.objects.get(username=username)
+
+            if user.banned:
+                return Response(
+                    {
+                        "error": "You have been banned. Please try again when you have been unbanned by an admin."
+                    }
+                )
 
             res = Response()
             res.data = {
@@ -520,3 +524,21 @@ def delete_report(request, id):
         return Response({"error": "Report does not exist"})
     except:
         return Response({"success": False})
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def toggle_banned(request, username):
+    try:
+        user = MyUser.objects.get(username=username)
+
+        if (not request.user.role == MyUser.Role.ADMIN) or (
+            user.role == MyUser.Role.ADMIN
+        ):
+            return Response({"error": "You do not have permission to ban this user"})
+
+        user.banned = not user.banned
+        user.save()
+        return Response({"success": True})
+    except MyUser.DoesNotExist:
+        return Response({"error": "User not found"})

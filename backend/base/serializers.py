@@ -38,6 +38,7 @@ class MyUserProfileSerializer(serializers.ModelSerializer):
             "follower_count",
             "following_count",
             "muted",
+            "banned",
         ]
 
     def get_follower_count(self, obj):
@@ -88,7 +89,7 @@ class ReportSerializer(serializers.ModelSerializer):
             "reason",
             "description",
             "formatted_date",
-            'resolved'
+            "resolved",
         ]
 
     def get_username(self, obj):
@@ -116,4 +117,5 @@ class UserSerializer(serializers.ModelSerializer):
             "role",
             "muted",
             "reports",
+            "banned",
         ]

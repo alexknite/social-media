@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  ButtonGroup,
   Checkbox,
   Flex,
   Heading,
@@ -13,16 +12,15 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
-  delete_user,
   get_user_profile_data,
   get_users_posts,
   toggle_follow,
-  toggle_muted,
 } from "../api/endpoints";
 import { SERVER_URL } from "../constants/constants";
 import { Post } from "../components/Post";
 import { useNavigate } from "react-router-dom";
 import { TbMessageReport } from "react-icons/tb";
+import { AdminPanel } from "../components/AdminPanel";
 
 export const UserProfile = () => {
   const get_username_from_url = () => {
@@ -76,6 +74,7 @@ const UserDetails = ({
   const [following, setIsFollowing] = useState(false);
   const [role, setRole] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [banned, setBanned] = useState(false);
 
   const handleToggleFollow = async () => {
     const data = await toggle_follow(username);
@@ -110,8 +109,9 @@ const UserDetails = ({
         setIsFollowing(data.following);
         setRole(storage.role);
         setMuted(data.muted);
+        setBanned(data.banned);
       } catch {
-        console.log("error");
+        console.error("There was an error fetching user profile data.");
       } finally {
         setLoading(false);
       }
@@ -127,7 +127,9 @@ const UserDetails = ({
         <AdminPanel
           username={username}
           muted={muted}
+          banned={banned}
           setMuted={setMuted}
+          setBanned={setBanned}
           handleNav={handleNav}
         />
       ) : (
@@ -251,31 +253,31 @@ const UserPosts = ({ username, isOurProfile }) => {
           </Checkbox>
           {showArchived
             ? posts.all.map((p) => (
-                <Post
-                  key={`post-${p.id}`}
-                  id={p.id}
-                  username={p.username}
-                  description={p.description}
-                  formatted_date={p.formatted_date}
-                  liked={p.liked}
-                  like_count={p.like_count}
-                  archived={p.archived}
-                  setPosts={setPosts}
-                />
-              ))
+              <Post
+                key={`post-${p.id}`}
+                id={p.id}
+                username={p.username}
+                description={p.description}
+                formatted_date={p.formatted_date}
+                liked={p.liked}
+                like_count={p.like_count}
+                archived={p.archived}
+                setPosts={setPosts}
+              />
+            ))
             : posts.unarchived.map((p) => (
-                <Post
-                  key={`post-${p.id}`}
-                  id={p.id}
-                  username={p.username}
-                  description={p.description}
-                  formatted_date={p.formatted_date}
-                  liked={p.liked}
-                  like_count={p.like_count}
-                  archived={p.archived}
-                  setPosts={setPosts}
-                />
-              ))}
+              <Post
+                key={`post-${p.id}`}
+                id={p.id}
+                username={p.username}
+                description={p.description}
+                formatted_date={p.formatted_date}
+                liked={p.liked}
+                like_count={p.like_count}
+                archived={p.archived}
+                setPosts={setPosts}
+              />
+            ))}
         </VStack>
       ) : (
         posts.unarchived.map((p) => (
@@ -291,51 +293,6 @@ const UserPosts = ({ username, isOurProfile }) => {
           />
         ))
       )}
-    </Flex>
-  );
-};
-
-const AdminPanel = ({ username, muted, setMuted, handleNav }) => {
-  const handleDelete = async () => {
-    const data = await delete_user(username);
-
-    if (data.success) {
-      handleNav("");
-    } else {
-      alert(data.error);
-    }
-  };
-
-  const handleToggleMute = async () => {
-    const data = await toggle_muted(username);
-    if (data.success) {
-      setMuted(!muted);
-    } else {
-      alert(data.error);
-    }
-  };
-  return (
-    <Flex
-      bg="gray.100"
-      borderRadius="10px"
-      w="100%"
-      h="130px"
-      justifyContent="center"
-      alignItems="center"
-    >
-      <VStack w="100%" alignItems="start" p="20px">
-        <Heading fontWeight="200" fontSize="20px">
-          Admin Panel
-        </Heading>
-        <ButtonGroup colorScheme="green" spacing="20px" mt="10px">
-          <Button onClick={handleToggleMute}>
-            {muted ? "Unmute" : "Mute"} User
-          </Button>
-          <Button onClick={handleDelete} colorScheme="red">
-            Delete User
-          </Button>
-        </ButtonGroup>
-      </VStack>
     </Flex>
   );
 };
