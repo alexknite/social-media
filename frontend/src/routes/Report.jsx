@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { report_user } from "../api/endpoints";
+import { useNavigate } from "react-router-dom";
 
 export const Report = () => {
   const storage = JSON.parse(localStorage.getItem("reportUser"));
@@ -19,6 +20,11 @@ export const Report = () => {
   const [username, setUsername] = useState(storage ? storage.username : "");
   const [reason, setReason] = useState("");
   const [description, setDescription] = useState("");
+  const nav = useNavigate();
+
+  const handleNav = (route) => {
+    nav(`/${route}`);
+  };
 
   const missingUsername = username === "";
   const missingReason = reason === "";
@@ -28,9 +34,9 @@ export const Report = () => {
       reason: reason,
       description: description,
     });
-    console.log(data)
     if (data.success) {
       alert(data.message);
+      handleNav("");
     } else {
       alert(data.error);
     }

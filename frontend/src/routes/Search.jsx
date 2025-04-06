@@ -26,8 +26,12 @@ export const Search = () => {
     <Flex w="100%" justifyContent="center" pt="50px">
       <VStack w="95%" maxW="500px" alignItems="start" gap="20px">
         <Heading>Search Users</Heading>
-        <HStack w="100%" gap="0">
-          <Input onChange={(e) => setSearch(e.target.value)} bg="white" />
+        <HStack w="100%" gap="5px">
+
+          <Input
+            onChange={(e) => setSearch(e.target.value)}
+            variant="flushed"
+          />
           <Button onClick={handleSearch} colorScheme="blue">
             Search
           </Button>
