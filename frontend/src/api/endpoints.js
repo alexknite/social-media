@@ -141,3 +141,8 @@ export const get_reports = async (num) => {
   const res = await api.get(`/get_reports/?page=${num}`);
   return res.data;
 };
+
+export const toggle_resolved = async (id) => {
+  const res = await api.patch(`/toggle_resolved/${id}/`);
+  return res.data;
+};

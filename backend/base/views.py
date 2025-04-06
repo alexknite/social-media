@@ -466,3 +466,22 @@ def get_reports(request):
         return Response(
             {"error": "There was an error fetching user reports. Try again later."}
         )
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def toggle_resolved(request, id):
+    try:
+        report = Report.objects.get(id=id)
+
+        if request.user.role != MyUser.Role.ADMIN:
+            return Response(
+                {"error": "You do not have access to resolve user reports."}
+            )
+
+        report.resolved = not report.resolved
+        report.save()
+
+        return Response({"success": True, "resolved": report.resolved})
+    except Report.DoesNotExist:
+        return Response({"error": "Report does not exist"}, status=404)

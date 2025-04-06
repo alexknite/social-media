@@ -13,7 +13,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { get_reports } from "../api/endpoints";
+import { get_reports, toggle_resolved } from "../api/endpoints";
 import { useNavigate } from "react-router-dom";
 
 export const UserReports = () => {
@@ -52,7 +52,6 @@ export const UserReports = () => {
             <Thead>
               <Tr>
                 <Th>Action</Th>
-                <Th>Status</Th>
                 <Th>Date & Time</Th>
                 <Th>Reported User</Th>
                 <Th>Reported By</Th>
@@ -69,11 +68,13 @@ export const UserReports = () => {
                 reports.map((r) => (
                   <Report
                     key={`report-${r.id}`}
+                    id={r.id}
                     username={r.username}
                     reporter={r.reporter}
                     reason={r.reason}
                     description={r.description}
                     formattedDate={r.formatted_date}
+                    resolved={r.resolved}
                   />
                 ))
               ) : (
@@ -94,27 +95,47 @@ export const UserReports = () => {
   );
 };
 
-const Report = ({ username, reporter, reason, description, formattedDate }) => {
+const Report = ({
+  id,
+  username,
+  reporter,
+  reason,
+  description,
+  formattedDate,
+  resolved,
+}) => {
+  const [clientResolved, setClientResolved] = useState(resolved);
+
   const nav = useNavigate();
   const handleNav = (route) => {
     nav(`/${route}`);
   };
 
-  const handleResolve = () => {
-    console.log("Resolve!");
+  const handleResolve = async () => {
+    const data = await toggle_resolved(id);
+    if (data.success) {
+      setClientResolved(data.resolved);
+    } else {
+      alert(data.error);
+    }
   };
 
   return (
-    <Tr>
+    <Tr
+      opacity={clientResolved ? 0.6 : 1}
+      bg={clientResolved ? "gray.200" : "transparent"}
+      textDecoration={clientResolved ? "line-through" : "none"}
+    >
       <Td>
         <ButtonGroup colorScheme="green" size="xs">
-          <Button onClick={handleResolve}>Resolve</Button>
+          <Button onClick={handleResolve}>
+            {clientResolved ? "Unresolve" : "Resolve"}
+          </Button>
           <Button colorScheme="red" onClick={handleResolve}>
             Delete
           </Button>
         </ButtonGroup>
       </Td>
-      <Td>Status</Td>
       <Td>{formattedDate}</Td>
       <Td onClick={() => handleNav(username)} cursor="pointer">
         {username}

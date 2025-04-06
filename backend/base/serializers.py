@@ -88,6 +88,7 @@ class ReportSerializer(serializers.ModelSerializer):
             "reason",
             "description",
             "formatted_date",
+            'resolved'
         ]
 
     def get_username(self, obj):

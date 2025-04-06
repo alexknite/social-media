@@ -4,10 +4,11 @@ from django.urls import path
 
 from .views import (CustomTokenObtainPairView, CustomTokenRefreshView,
                     authenticated, create_post, delete_post, delete_user,
-                    get_reports, get_posts, get_user_profile_data,
+                    get_posts, get_reports, get_user_profile_data,
                     get_user_reports, get_users_posts, logout, register,
                     report_user, search_users, toggle_archived, toggle_follow,
-                    toggle_like, toggle_mute, update_user_details)
+                    toggle_like, toggle_mute, toggle_resolved,
+                    update_user_details)
 
 urlpatterns = [
     path("user_data/<str:pk>/", get_user_profile_data),
@@ -30,4 +31,5 @@ urlpatterns = [
     path("report_user/<str:username>/", report_user),
     path("get_user_reports/<str:username>/", get_user_reports),
     path("get_reports/", get_reports),
+    path("toggle_resolved/<int:id>/", toggle_resolved),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
