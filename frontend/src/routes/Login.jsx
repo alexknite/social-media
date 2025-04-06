@@ -23,11 +23,7 @@ export const Login = () => {
   const missingPassword = password === "";
 
   const handleLogin = () => {
-    if (missingUsername || missingPassword) {
-      alert("Please complete all required fields.");
-    } else {
-      auth_login(username, password);
-    }
+    auth_login(username, password);
   };
 
   return (
@@ -47,8 +43,8 @@ export const Login = () => {
               <FormLabel>Username</FormLabel>
             )}
             <Input
+              variant="flushed"
               onChange={(e) => setUsername(e.target.value)}
-              bg="white"
               type="text"
             />
           </VStack>
@@ -61,8 +57,8 @@ export const Login = () => {
               <FormLabel>Password</FormLabel>
             )}
             <Input
+              variant="flushed"
               onChange={(e) => setPassword(e.target.value)}
-              bg="white"
               type="password"
             />
           </VStack>

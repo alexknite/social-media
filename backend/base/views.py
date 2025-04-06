@@ -1,5 +1,3 @@
-# TODO add status codes
-
 from rest_framework.decorators import (api_view, authentication_classes,
                                        permission_classes)
 from rest_framework.pagination import PageNumberPagination
@@ -26,8 +24,14 @@ def register(request):
     serializer = UserRegisterSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors)
+        return Response(
+            {
+                "success": True,
+                "message": "Successfully registered!",
+                "user": serializer.data,
+            }
+        )
+    return Response({"error": serializer.errors})
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -40,10 +44,10 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             refresh_token = tokens["refresh"]
             username = request.data["username"]
 
-            try:
-                user = MyUser.objects.get(username=username)
-            except MyUser.DoesNotExist:
-                return Response({"error": "User does not exist"})
+            if username == "":
+                return Response({"error": "You must enter a username to login."})
+
+            user = MyUser.objects.get(username=username)
 
             res = Response()
             res.data = {
@@ -75,13 +79,16 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             )
 
             return res
+        except MyUser.DoesNotExist:
+            return Response({"error": "User does not exist"})
         except:
-            return Response({"success": False})
+            return Response(
+                {"error": "Invalid username and/or password. Please try again."}
+            )
 
 
 class CustomTokenRefreshView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
-
         try:
             refresh_token = request.COOKIES.get("refresh_token")
             request.data["refresh"] = refresh_token
@@ -297,9 +304,15 @@ def update_user_details(request):
 
     if serializer.is_valid():
         serializer.save()
-        return Response({**serializer.data, "success": True})
+        return Response(
+            {
+                "success": True,
+                "message": "Successfully updated user details!",
+                "update": {**serializer.data},
+            }
+        )
 
-    return Response({**serializer.errors, "success": False})
+    return Response({"errors": {**serializer.errors}})
 
 
 @api_view(["POST"])

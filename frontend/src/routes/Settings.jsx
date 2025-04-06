@@ -28,7 +28,6 @@ export const Settings = () => {
   const [bio, setBio] = useState(storage ? storage.bio : "");
   const [confirmDelete, setConfirmDelete] = useState("");
 
-  const missingUsername = username === "";
   const missingEmail = email === "";
   const missingConfirmDelete = confirmDelete !== username;
 
@@ -40,18 +39,18 @@ export const Settings = () => {
   };
 
   const handleUpdate = async () => {
-    if (missingUsername || missingEmail) {
+    if (missingEmail) {
       alert("Please complete all required fields.");
     } else {
-      try {
-        await update_user({
-          username: username,
-          email: email,
-          profile_image: profileImage,
-          first_name: firstName,
-          last_name: lastName,
-          bio: bio,
-        });
+      const data = await update_user({
+        username: username,
+        email: email,
+        profile_image: profileImage,
+        first_name: firstName,
+        last_name: lastName,
+        bio: bio,
+      });
+      if (data.success) {
         localStorage.setItem(
           "userData",
           JSON.stringify({
@@ -62,9 +61,9 @@ export const Settings = () => {
             bio: bio,
           }),
         );
-        alert("Successfully updated user details!");
-      } catch {
-        alert("Error updating details!");
+        alert(data.message);
+      } else {
+        alert("There was an error updating user details.");
       }
     }
   };
@@ -82,14 +81,11 @@ export const Settings = () => {
               type="file"
             />
           </FormControl>
-          <FormControl isInvalid={missingUsername}>
+          <FormControl>
             <VStack w="100%" gap="5px" alignItems="start">
-              {missingUsername ? (
-                <FormErrorMessage>Username is required.</FormErrorMessage>
-              ) : (
-                <FormLabel>Username</FormLabel>
-              )}
+              <FormLabel>Username</FormLabel>
               <Input
+                isDisabled
                 onChange={(e) => setUsername(e.target.value)}
                 value={username}
                 bg="white"

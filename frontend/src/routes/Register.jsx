@@ -23,28 +23,32 @@ export const Register = () => {
   const nav = useNavigate();
 
   const missingUsername = username === "";
-  //TODO confirm email is actually an email
   const missingEmail = email === "";
-  const missingFirstName = firstName === "";
   const missingPassword = password === "";
   const missingConfirmPassword = confirmPassword === "";
+
+  const isValidEmail = (input) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input);
+  };
+  const isInvalidEmail = !isValidEmail(email);
 
   const handleRegister = async () => {
     if (
       missingUsername ||
       missingEmail ||
-      missingFirstName ||
       missingPassword ||
       missingConfirmPassword
     ) {
       alert("Please complete all required fields.");
+    } else if (isInvalidEmail) {
+      alert("Please enter a valid email address.");
     } else {
       try {
         await register(username, email, firstName, lastName, password);
         alert("Successfully registered!");
         nav("/login");
       } catch {
-        alert("Error registering");
+        alert("Error registering.");
       }
     }
   };
@@ -67,8 +71,9 @@ export const Register = () => {
                 <FormLabel>Username</FormLabel>
               )}
               <Input
+                variant="flushed"
+                mb="5px"
                 onChange={(e) => setUsername(e.target.value)}
-                bg="white"
                 type="text"
               />
             </VStack>
@@ -81,22 +86,20 @@ export const Register = () => {
                 <FormLabel>Email</FormLabel>
               )}
               <Input
+                variant="flushed"
+                mb="5px"
                 onChange={(e) => setEmail(e.target.value)}
-                bg="white"
                 type="email"
               />
             </VStack>
           </FormControl>
-          <FormControl isInvalid={missingFirstName}>
+          <FormControl>
             <VStack w="100%" gap="10px" alignItems="start">
-              {missingFirstName ? (
-                <FormErrorMessage>First Name is required.</FormErrorMessage>
-              ) : (
-                <FormLabel>First Name</FormLabel>
-              )}
+              <FormLabel>First Name</FormLabel>
               <Input
+                variant="flushed"
+                mb="5px"
                 onChange={(e) => setFirstName(e.target.value)}
-                bg="white"
                 type="text"
               />
             </VStack>
@@ -105,8 +108,9 @@ export const Register = () => {
             <VStack w="100%" gap="10px" alignItems="start">
               <FormLabel>Last Name</FormLabel>
               <Input
+                variant="flushed"
+                mb="5px"
                 onChange={(e) => setLastName(e.target.value)}
-                bg="white"
                 type="text"
               />
             </VStack>
@@ -119,8 +123,9 @@ export const Register = () => {
                 <FormLabel>Password</FormLabel>
               )}
               <Input
+                variant="flushed"
+                mb="5px"
                 onChange={(e) => setPassword(e.target.value)}
-                bg="white"
                 type="password"
               />
             </VStack>
@@ -135,8 +140,9 @@ export const Register = () => {
                 <FormLabel>Confirm Password</FormLabel>
               )}
               <Input
+                variant="flushed"
+                mb="5px"
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                bg="white"
                 type="password"
               />
             </VStack>
