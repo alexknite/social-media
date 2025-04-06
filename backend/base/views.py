@@ -485,3 +485,22 @@ def toggle_resolved(request, id):
         return Response({"success": True, "resolved": report.resolved})
     except Report.DoesNotExist:
         return Response({"error": "Report does not exist"}, status=404)
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_report(request, id):
+    try:
+        report = Report.objects.get(id=id)
+
+        if request.user.role != MyUser.Role.ADMIN:
+            return Response(
+                {"error": "You do not have access to resolve user reports."}
+            )
+
+        report.delete()
+        return Response({"success": True})
+    except Report.DoesNotExist:
+        return Response({"error": "Report does not exist"})
+    except:
+        return Response({"success": False})

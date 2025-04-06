@@ -13,7 +13,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { get_reports, toggle_resolved } from "../api/endpoints";
+import { delete_report, get_reports, toggle_resolved } from "../api/endpoints";
 import { useNavigate } from "react-router-dom";
 
 export const UserReports = () => {
@@ -75,6 +75,7 @@ export const UserReports = () => {
                     description={r.description}
                     formattedDate={r.formatted_date}
                     resolved={r.resolved}
+                    setReports={setReports}
                   />
                 ))
               ) : (
@@ -103,6 +104,7 @@ const Report = ({
   description,
   formattedDate,
   resolved,
+  setReports,
 }) => {
   const [clientResolved, setClientResolved] = useState(resolved);
 
@@ -120,6 +122,15 @@ const Report = ({
     }
   };
 
+  const handleDelete = async () => {
+    const data = await delete_report(id);
+    if (data.success) {
+      setReports((prevReports) => [...prevReports.filter((r) => r.id !== id)]);
+    } else {
+      alert(data.error);
+    }
+  };
+
   return (
     <Tr
       opacity={clientResolved ? 0.6 : 1}
@@ -131,7 +142,7 @@ const Report = ({
           <Button onClick={handleResolve}>
             {clientResolved ? "Unresolve" : "Resolve"}
           </Button>
-          <Button colorScheme="red" onClick={handleResolve}>
+          <Button colorScheme="red" onClick={handleDelete}>
             Delete
           </Button>
         </ButtonGroup>

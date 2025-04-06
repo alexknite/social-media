@@ -146,3 +146,8 @@ export const toggle_resolved = async (id) => {
   const res = await api.patch(`/toggle_resolved/${id}/`);
   return res.data;
 };
+
+export const delete_report = async (id) => {
+  const res = await api.delete(`/delete_report/${id}/`);
+  return res.data;
+};
