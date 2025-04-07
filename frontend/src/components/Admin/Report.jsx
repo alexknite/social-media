@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Td, Tr } from "@chakra-ui/react";
 import { useState } from "react";
-import { delete_report, toggle_resolved } from "../api/endpoints";
+import { delete_report, toggle_resolved } from "../../api/endpoints";
 import { useNavigate } from "react-router-dom";
 
 export const Report = ({

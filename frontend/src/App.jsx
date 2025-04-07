@@ -11,7 +11,7 @@ import { Home } from "./routes/Home";
 import { Search } from "./routes/Search";
 import { Settings } from "./routes/Settings";
 import { AdminDashboard } from "./routes/AdminDashboard";
-import { AdminRoute } from "./components/AdminRoute";
+import { AdminRoute } from "./components/Admin/AdminRoute";
 import { Report } from "./routes/Report";
 
 function App() {

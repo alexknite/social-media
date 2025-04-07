@@ -12,7 +12,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { get_reports } from "../api/endpoints";
+import { get_reports } from "../../api/endpoints";
 import { Report } from "./Report";
 
 export const UserReports = () => {

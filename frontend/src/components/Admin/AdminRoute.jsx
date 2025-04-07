@@ -1,6 +1,6 @@
-import { useAuth } from "../contexts/useAuth";
+import { useAuth } from "../../contexts/useAuth";
 import { Navigate } from "react-router-dom";
-import { Loading } from "./Loading";
+import { Loading } from "../Loading";
 
 export const AdminRoute = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("userData"));

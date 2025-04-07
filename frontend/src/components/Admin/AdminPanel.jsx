@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Flex, Heading, VStack } from "@chakra-ui/react";
-import { delete_user, toggle_banned, toggle_muted } from "../api/endpoints";
+import { delete_user, toggle_banned, toggle_muted } from "../../api/endpoints";
 export const AdminPanel = ({
   username,
   muted,

@@ -20,7 +20,7 @@ import { SERVER_URL } from "../constants/constants";
 import { Post } from "../components/Post";
 import { useNavigate } from "react-router-dom";
 import { TbMessageReport } from "react-icons/tb";
-import { AdminPanel } from "../components/AdminPanel";
+import { AdminPanel } from "../components/Admin/AdminPanel";
 
 export const UserProfile = () => {
   const get_username_from_url = () => {
@@ -253,31 +253,31 @@ const UserPosts = ({ username, isOurProfile }) => {
           </Checkbox>
           {showArchived
             ? posts.all.map((p) => (
-              <Post
-                key={`post-${p.id}`}
-                id={p.id}
-                username={p.username}
-                description={p.description}
-                formatted_date={p.formatted_date}
-                liked={p.liked}
-                like_count={p.like_count}
-                archived={p.archived}
-                setPosts={setPosts}
-              />
-            ))
+                <Post
+                  key={`post-${p.id}`}
+                  id={p.id}
+                  username={p.username}
+                  description={p.description}
+                  formatted_date={p.formatted_date}
+                  liked={p.liked}
+                  like_count={p.like_count}
+                  archived={p.archived}
+                  setPosts={setPosts}
+                />
+              ))
             : posts.unarchived.map((p) => (
-              <Post
-                key={`post-${p.id}`}
-                id={p.id}
-                username={p.username}
-                description={p.description}
-                formatted_date={p.formatted_date}
-                liked={p.liked}
-                like_count={p.like_count}
-                archived={p.archived}
-                setPosts={setPosts}
-              />
-            ))}
+                <Post
+                  key={`post-${p.id}`}
+                  id={p.id}
+                  username={p.username}
+                  description={p.description}
+                  formatted_date={p.formatted_date}
+                  liked={p.liked}
+                  like_count={p.like_count}
+                  archived={p.archived}
+                  setPosts={setPosts}
+                />
+              ))}
         </VStack>
       ) : (
         posts.unarchived.map((p) => (
