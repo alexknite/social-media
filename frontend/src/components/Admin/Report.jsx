@@ -11,7 +11,7 @@ export const Report = ({
   description,
   formattedDate,
   resolved,
-  setReports,
+  setAllReports,
 }) => {
   const [clientResolved, setClientResolved] = useState(resolved);
 
@@ -24,6 +24,12 @@ export const Report = ({
     const data = await toggle_resolved(id);
     if (data.success) {
       setClientResolved(data.resolved);
+      setAllReports((prevReports) => {
+        const report = prevReports.find((r) => r.id === id);
+        report.resolved = data.resolved;
+
+        return [...prevReports];
+      });
     } else {
       alert(data.error);
     }
@@ -32,7 +38,9 @@ export const Report = ({
   const handleDelete = async () => {
     const data = await delete_report(id);
     if (data.success) {
-      setReports((prevReports) => [...prevReports.filter((r) => r.id !== id)]);
+      setAllReports((prevReports) => [
+        ...prevReports.filter((r) => r.id !== id),
+      ]);
     } else {
       alert(data.error);
     }
