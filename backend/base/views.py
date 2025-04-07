@@ -518,18 +518,11 @@ def get_reports(request):
 
         reports = Report.objects.all().order_by("-created_at")
 
-        paginator = PageNumberPagination()
-        paginator.page_size = 10
+        serializer = ReportSerializer(reports, many=True)
+        return Response({"success": True, "reports": serializer.data})
 
-        result_page = paginator.paginate_queryset(reports, request)
-
-        serializer = ReportSerializer(result_page, many=True)
-
-        return paginator.get_paginated_response(serializer.data)
-    except:
-        return Response(
-            {"error": "There was an error fetching user reports. Try again later."}
-        )
+    except Exception as e:
+        return Response({"error": f"An error occurred: {str(e)}"})
 
 
 @api_view(["PATCH"])
@@ -643,3 +636,4 @@ def update_log_details(request, id):
         return Response({"error": "Admin log not found."})
     except Exception as e:
         return Response({"error": f"An error occurred: {str(e)}"}, status=500)
+

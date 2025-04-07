@@ -137,8 +137,8 @@ export const report_user = async (username, values) => {
   return res.data;
 };
 
-export const get_reports = async (num) => {
-  const res = await api.get(`/get_reports/?page=${num}`);
+export const get_reports = async () => {
+  const res = await api.get("/get_reports/");
   return res.data;
 };
 

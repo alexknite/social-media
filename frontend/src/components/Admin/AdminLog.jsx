@@ -95,7 +95,7 @@ const AdminLog = () => {
       <Flex w="100%" justifyContent="center">
         <VStack w="100%" alignItems="start">
           <Heading fontWeight="350">Admin Action Log</Heading>
-          <TableContainer>
+          <TableContainer w='100%'>
             <Table variant="striped">
               <Thead>
                 <Tr>
@@ -137,7 +137,7 @@ const AdminLog = () => {
             </Table>
           </TableContainer>
           {nextPage && !loading && (
-            <Button onClick={loadMoreActions} w="100%">
+            <Button w="100%" onClick={loadMoreActions}>
               Load More
             </Button>
           )}
