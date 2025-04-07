@@ -23,6 +23,9 @@ import { TbMessageReport } from "react-icons/tb";
 import { AdminPanel } from "../components/Admin/AdminPanel";
 
 export const UserProfile = () => {
+  const storage = JSON.parse(localStorage.getItem("userData"));
+  const isAdmin = storage ? storage["role"] === "ADMIN" : false;
+
   const get_username_from_url = () => {
     const url_split = window.location.pathname.split("/");
     return url_split[url_split.length - 1];
@@ -49,10 +52,15 @@ export const UserProfile = () => {
             isOurProfile={isOurProfile}
             setIsOurProfile={setIsOurProfile}
             handleNav={handleNav}
+            isAdmin={isAdmin}
           />
         </Box>
         <Box w="100%" mt="30px">
-          <UserPosts username={username} isOurProfile={isOurProfile} />
+          <UserPosts
+            username={username}
+            isOurProfile={isOurProfile}
+            isAdmin={isAdmin}
+          />
         </Box>
       </VStack>
     </Flex>
@@ -64,15 +72,14 @@ const UserDetails = ({
   isOurProfile,
   setIsOurProfile,
   handleNav,
+  isAdmin,
 }) => {
-  const storage = JSON.parse(localStorage.getItem("userData"));
   const [loading, setLoading] = useState(true);
   const [bio, setBio] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [following, setIsFollowing] = useState(false);
-  const [role, setRole] = useState(false);
   const [muted, setMuted] = useState(false);
   const [banned, setBanned] = useState(false);
 
@@ -107,7 +114,6 @@ const UserDetails = ({
         setFollowingCount(data.following_count);
         setIsOurProfile(data.is_our_profile);
         setIsFollowing(data.following);
-        setRole(storage.role);
         setMuted(data.muted);
         setBanned(data.banned);
       } catch {
@@ -123,7 +129,7 @@ const UserDetails = ({
     <VStack w="100%" alignItems="start" gap="40px">
       {loading ? (
         <Spacer />
-      ) : !isOurProfile && role === "ADMIN" ? (
+      ) : !isOurProfile && isAdmin ? (
         <AdminPanel
           username={username}
           muted={muted}
@@ -201,7 +207,7 @@ const UserDetails = ({
   );
 };
 
-const UserPosts = ({ username, isOurProfile }) => {
+const UserPosts = ({ username, isOurProfile, isAdmin }) => {
   const [posts, setPosts] = useState([
     {
       all: [],
@@ -243,7 +249,7 @@ const UserPosts = ({ username, isOurProfile }) => {
     <Flex w="100%" wrap="wrap" gap="30px" pb="50px">
       {loading ? (
         <Spacer />
-      ) : isOurProfile ? (
+      ) : isAdmin || isOurProfile ? (
         <VStack w="100%" alignItems="start" gap="30px">
           <Checkbox
             isChecked={showArchived}

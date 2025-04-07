@@ -13,9 +13,14 @@ const Action = ({
   setDetails,
   setId,
 }) => {
+  const adminUsername = admin ? admin : "Deleted Admin";
+  const targetUsername = user ? user : "Deleted User";
+
   const nav = useNavigate();
   const handleNav = (route) => {
-    nav(`/${route}`);
+    if (route) {
+      nav(`/${route}`);
+    }
   };
 
   const handleOpenModal = () => {
@@ -28,11 +33,11 @@ const Action = ({
     <Tr>
       <Td>{timestamp}</Td>
       <Td onClick={() => handleNav(admin)} cursor="pointer">
-        {admin}
+        {adminUsername}
       </Td>
       <Td>{action}</Td>
       <Td onClick={() => handleNav(user)} cursor="pointer">
-        {user}
+        {targetUsername}
       </Td>
       <Td>{post}</Td>
       <Td

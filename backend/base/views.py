@@ -360,14 +360,22 @@ def delete_user(request, username):
     try:
         user = MyUser.objects.get(username=username)
 
-        if (
-            request.user.role != "ADMIN" and (user.username != request.user.username)
-        ) or user.role == "ADMIN":
+        if (not request.user.role == MyUser.Role.ADMIN) and (
+            not user.username == request.user.username
+        ):
             return Response(
-                {
-                    "error": "You do not have permission to delete this user.",
-                    "success": False,
-                }
+                {"error": "You do not have permission to delete this user."}
+            )
+
+        if user.role == MyUser.Role.ADMIN:
+            return Response({"error": "You cannot delete an admin account."})
+
+        if request.user.role == MyUser.Role.ADMIN:
+            AdminLog.objects.create(
+                admin=request.user,
+                action=AdminLog.Action.DELETE_USER,
+                user=user,
+                details=f"Deleted {user.username}",
             )
 
         user.delete()
@@ -390,6 +398,17 @@ def toggle_archived(request, id):
         ):
             post.archived = not post.archived
             post.save()
+
+            if (request.user.role == MyUser.Role.ADMIN) and not (
+                post.user.username == request.user.username
+            ):
+                AdminLog.objects.create(
+                    admin=request.user,
+                    action=AdminLog.Action.TOGGLE_ARCHIVED,
+                    user=post.user,
+                    post=post,
+                    details=f"{'Archived' if post.archived else 'Unarchived'} post",
+                )
 
             return Response({"success": True, "archived": post.archived})
 
@@ -418,7 +437,10 @@ def toggle_mute(request, username):
         user.save()
 
         AdminLog.objects.create(
-            admin=request.user, action=AdminLog.Action.TOGGLE_MUTED, user=user
+            admin=request.user,
+            action=AdminLog.Action.TOGGLE_MUTED,
+            user=user,
+            details=f"{'Muted' if user.muted else 'Unmuted'} {user.username}",
         )
 
         return Response({"success": True})
@@ -552,6 +574,13 @@ def toggle_banned(request, username):
 
         user.banned = not user.banned
         user.save()
+
+        AdminLog.objects.create(
+            admin=request.user,
+            action=AdminLog.Action.TOGGLE_BANNED,
+            user=user,
+            details=f"{'Banned' if user.banned else 'Unbanned'} {user.username}",
+        )
         return Response({"success": True})
     except MyUser.DoesNotExist:
         return Response({"error": "User not found"})
