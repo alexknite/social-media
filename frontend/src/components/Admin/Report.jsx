@@ -62,7 +62,9 @@ export const Report = ({
         {reporter}
       </Td>
       <Td>{reason}</Td>
-      <Td>{description}</Td>
+      <Td sx={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+        {description}
+      </Td>
     </Tr>
   );
 };

@@ -6,10 +6,10 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
-from .models import MyUser, Post, Report
-from .serializers import (MyUserProfileSerializer, PostSerializer,
-                          ReportSerializer, UserRegisterSerializer,
-                          UserSerializer)
+from .models import AdminLog, MyUser, Post, Report
+from .serializers import (AdminLogSerializer, MyUserProfileSerializer,
+                          PostSerializer, ReportSerializer,
+                          UserRegisterSerializer, UserSerializer)
 
 
 @api_view(["GET"])
@@ -416,6 +416,11 @@ def toggle_mute(request, username):
 
         user.muted = not user.muted
         user.save()
+
+        AdminLog.objects.create(
+            admin=request.user, action=AdminLog.Action.TOGGLE_MUTED, user=user
+        )
+
         return Response({"success": True})
     except MyUser.DoesNotExist:
         return Response({"error": "User not found"})
@@ -550,3 +555,53 @@ def toggle_banned(request, username):
         return Response({"success": True})
     except MyUser.DoesNotExist:
         return Response({"error": "User not found"})
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_admin_logs(request):
+    try:
+        if request.user.role != MyUser.Role.ADMIN:
+            return Response({"error": "You do not have access to view admin logs."})
+
+        admin_logs = AdminLog.objects.all().order_by("-created_at")
+
+        paginator = PageNumberPagination()
+        paginator.page_size = 5
+
+        result_page = paginator.paginate_queryset(admin_logs, request)
+
+        serializer = AdminLogSerializer(result_page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
+    except Exception as e:
+        error_message = str(e)
+        return Response({"error": error_message}, status=500)
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def update_log_details(request, id):
+    try:
+        if request.user.role != MyUser.Role.ADMIN:
+            return Response({"error": "You do not have permission to update this log."})
+
+        admin_log = AdminLog.objects.get(id=id)
+
+        details = request.data.get("details")
+        if not details:
+            return Response({"error": "Details are required to update."})
+
+        admin_log.details = details
+        admin_log.save()
+
+        return Response(
+            {
+                "success": True,
+            }
+        )
+
+    except AdminLog.DoesNotExist:
+        return Response({"error": "Admin log not found."})
+    except Exception as e:
+        return Response({"error": f"An error occurred: {str(e)}"}, status=500)

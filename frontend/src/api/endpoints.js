@@ -156,3 +156,15 @@ export const toggle_banned = async (username) => {
   const res = await api.post(`/toggle_banned/${username}/`);
   return res.data;
 };
+
+export const get_admin_logs = async (num) => {
+  const res = await api.get(`/get_admin_logs/?page=${num}`);
+  return res.data;
+};
+
+export const update_log_details = async (id, details) => {
+  const res = await api.patch(`/update_log_details/${id}/`, {
+    details: details,
+  });
+  return res.data;
+};

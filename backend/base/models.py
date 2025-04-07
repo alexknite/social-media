@@ -50,3 +50,28 @@ class Report(models.Model):
     description = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     resolved = models.BooleanField(default=False)
+
+
+class AdminLog(models.Model):
+    class Action(models.TextChoices):
+        DELETE_USER = "DELETE_USER", "Deleted User"
+        TOGGLE_MUTED = "TOGGLE_MUTED", "Toggled Muted"
+        TOGGLE_BANNED = "TOGGLE_BANNED", "Toggled Banned"
+        DELETE_POST = "DELETE_POST", "Deleted Post"
+        TOGGLE_ARCHIVED = "TOGGLE_ARCHIVED", "Toggled Archived"
+        OTHER = "OTHER", "Other"
+
+    admin = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    action = models.CharField(
+        max_length=20, choices=Action.choices, default=Action.OTHER
+    )
+    user = models.ForeignKey(
+        MyUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="targeted_by_admin",
+    )
+    post = models.ForeignKey(Post, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    details = models.TextField(max_length=500, blank=True)

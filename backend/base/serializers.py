@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import MyUser, Post, Report
+from .models import AdminLog, MyUser, Post, Report
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -97,6 +97,37 @@ class ReportSerializer(serializers.ModelSerializer):
 
     def get_reporter(self, obj):
         return obj.reporter.username
+
+    def get_formatted_date(self, obj):
+        return obj.created_at.strftime("%d %b %y, %H:%M:%S")
+
+
+class AdminLogSerializer(serializers.ModelSerializer):
+    admin_username = serializers.SerializerMethodField()
+    target_username = serializers.SerializerMethodField()
+    formatted_date = serializers.SerializerMethodField()
+    target_post = serializers.SerializerMethodField()
+
+    class Meta:
+        model = AdminLog
+        fields = [
+            "id",
+            "admin_username",
+            "action",
+            "target_username",
+            "target_post",
+            "formatted_date",
+            "details",
+        ]
+
+    def get_admin_username(self, obj):
+        return obj.admin.username if obj.admin else None
+
+    def get_target_post(self, obj):
+        return obj.post.id if obj.post else None
+
+    def get_target_username(self, obj):
+        return obj.user.username if obj.user else None
 
     def get_formatted_date(self, obj):
         return obj.created_at.strftime("%d %b %y, %H:%M:%S")
