@@ -343,6 +343,15 @@ def delete_post(request, id):
             request.user.role == MyUser.Role.ADMIN
             or post.user.username == request.user.username
         ):
+            if request.user.role == MyUser.Role.ADMIN:
+                AdminLog.objects.create(
+                    admin=request.user,
+                    action=AdminLog.Action.DELETE_POST,
+                    user=post.user,
+                    post=post,
+                    details=f"Deleted post #{post.id}",
+                )
+
             post.delete()
             return Response({"success": True})
 
@@ -407,7 +416,7 @@ def toggle_archived(request, id):
                     action=AdminLog.Action.TOGGLE_ARCHIVED,
                     user=post.user,
                     post=post,
-                    details=f"{'Archived' if post.archived else 'Unarchived'} post",
+                    details=f"{'Archived' if post.archived else 'Unarchived'} post #{post.id}",
                 )
 
             return Response({"success": True, "archived": post.archived})

@@ -39,6 +39,7 @@ class MyUserProfileSerializer(serializers.ModelSerializer):
             "following_count",
             "muted",
             "banned",
+            "role",
         ]
 
     def get_follower_count(self, obj):

@@ -1,6 +1,6 @@
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { LuArchive, LuArchiveRestore, LuTrash2 } from "react-icons/lu";
-import { Badge, Box, Flex, HStack, Text, VStack } from "@chakra-ui/react";
+import { Badge, Box, Flex, HStack, Tag, Text, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { delete_post, toggle_archived, toggle_like } from "../api/endpoints";
 import { useNavigate } from "react-router-dom";
@@ -96,6 +96,13 @@ export const Post = ({
         justifyContent="space-between"
       >
         <HStack>
+          {isAdmin ? (
+            <Tag colorScheme='orange' borderRadius="full">
+              {id}
+            </Tag>
+          ) : (
+            <></>
+          )}
           {clientArchived ? <Badge colorScheme="red">Archived</Badge> : <></>}
           <Text onClick={() => handleNavigation(username)} cursor="pointer">
             @{username}
