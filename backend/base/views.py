@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework.decorators import (api_view, authentication_classes,
                                        permission_classes)
 from rest_framework.pagination import PageNumberPagination
@@ -288,8 +289,17 @@ def get_posts(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def search_users(request):
-    query = request.query_params.get("query", "")
-    users = MyUser.objects.filter(username__icontains=query)
+    query = request.GET.get("query", "").strip()
+
+    if query:
+        users = MyUser.objects.filter(
+            Q(username__icontains=query)
+            | Q(first_name__icontains=query)
+            | Q(last_name__icontains=query)
+        )
+    else:
+        users = MyUser.objects.all()
+
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
@@ -636,4 +646,3 @@ def update_log_details(request, id):
         return Response({"error": "Admin log not found."})
     except Exception as e:
         return Response({"error": f"An error occurred: {str(e)}"}, status=500)
-

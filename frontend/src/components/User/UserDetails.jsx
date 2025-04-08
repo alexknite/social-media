@@ -57,6 +57,7 @@ export const UserDetails = ({
     const fetchData = async () => {
       try {
         const data = await get_user_profile_data(username);
+        console.log(data);
         setBio(data.bio);
         setProfileImage(data.profile_image);
         setFollowerCount(data.follower_count);
