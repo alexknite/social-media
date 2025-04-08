@@ -22,7 +22,7 @@ This is a simple social media application using **React** and **Django**.
   - Description
 - Home with all User Posts
 - Search Users
-  - Based on username
+  - Based on username, first and last name
 - Report Users
   - Username
   - Reason
@@ -63,7 +63,6 @@ This is a simple social media application using **React** and **Django**.
 - Making usernames editable
 - Allow Admins to view archived Posts from Home page
 - Filter Admin Action Log
-- Search users by First and Last Name
 
 ## Setup
 

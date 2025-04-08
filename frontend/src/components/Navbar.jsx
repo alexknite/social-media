@@ -23,7 +23,7 @@ export const Navbar = () => {
     auth_logout();
   };
 
-  const isAdmin = storage["role"] === "ADMIN";
+  const isAdmin = storage ? storage["role"] === "ADMIN" : false;
 
   return (
     <Flex
