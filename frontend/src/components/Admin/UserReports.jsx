@@ -89,7 +89,7 @@ export const UserReports = () => {
   };
   return (
     <Flex w="100%" justifyContent="center">
-      <VStack w="100%" alignItems="start">
+      <VStack w="100%" alignItems="start" gap='20px'>
         <Heading fontWeight="350">User Reports</Heading>
         <HStack w="100%" gap="10px">
           <Select

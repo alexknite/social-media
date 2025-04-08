@@ -63,7 +63,10 @@ export const Settings = () => {
         );
         alert(data.message);
       } else {
-        alert("There was an error updating user details.");
+        const error = data.errors.email
+          ? data.errors.email[0]
+          : "There wasn an error updating user details.";
+        alert(error);
       }
     }
   };

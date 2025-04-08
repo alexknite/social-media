@@ -67,7 +67,7 @@ const AdminLog = () => {
       onClose();
     } else {
       alert(data.error);
-    }
+ }
   };
   return (
     <>
@@ -94,7 +94,7 @@ const AdminLog = () => {
       </Modal>
       <Flex w="100%" justifyContent="center">
         <VStack w="100%" alignItems="start">
-          <Heading fontWeight="350">Admin Action Log</Heading>
+          <Heading fontWeight="350" mb='20px'>Admin Action Log</Heading>
           <TableContainer w='100%'>
             <Table variant="striped">
               <Thead>
