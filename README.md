@@ -63,6 +63,7 @@ This is a simple social media application using **React** and **Django**.
 - Making usernames editable
 - Allow Admins to view archived Posts from Home page
 - Filter Admin Action Log
+- Add censored words and prevent Posts being created with any censored words
 
 ## Setup
 
